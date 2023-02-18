@@ -1,0 +1,45 @@
+{
+  "name": "react-visualizer",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "FFSS PTRI 9",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently --kill-others \"npm run server\" \"npm run client\"",
+    "server": "nodemon --watch src/server/**/*.ts --exec ts-node src/server/index.ts",
+    "client": "webpack serve --config webpack.config.js",
+    "build": "webpack --config webpack.config.js",
+    "start": "ts-node src/server/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oslabs-beta/react-visualizer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oslabs-beta/react-visualizer/issues"
+  },
+  "homepage": "https://github.com/oslabs-beta/react-visualizer#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.13.0",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "concurrently": "^7.6.0",
+    "css-loader": "^6.7.3",
+    "nodemon": "^2.0.20",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.4.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1"
+  }
+}
