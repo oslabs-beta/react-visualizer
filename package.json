@@ -10,7 +10,8 @@
     "client": "webpack serve --config webpack.config.js",
     "build": "webpack --config webpack.config.js",
     "start": "ts-node src/server/index.ts",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
