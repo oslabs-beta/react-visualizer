@@ -105,3 +105,6 @@ dist
 
 # Webpack
 build/public/bundle.js
+
+# macOS files
+.DS_Store
