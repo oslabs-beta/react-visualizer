@@ -15,6 +15,7 @@
   "rules": {
     "prettier/prettier": "error",
     "import/prefer-default-export": "off",
+    "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
