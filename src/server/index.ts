@@ -1,7 +1,8 @@
 import express, { NextFunction, Request, Response } from 'express';
 import path from 'path';
+import http from 'http';
 
-const app = express();
+const app: express.Application = express();
 const PORT = 3000;
 
 app.use(express.static('build/public'));
@@ -14,6 +15,6 @@ app.get('/api', (_req: Request, res: Response, _next: NextFunction): void => {
   res.send('Hello from the backend!');
 });
 
-app.listen(PORT, (): void => {});
+const server: http.Server = app.listen(PORT);
 
-export default app;
+export { app, server };

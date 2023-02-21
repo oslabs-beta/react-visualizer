@@ -1,18 +1,11 @@
-import { describe, expect, it, beforeAll, afterAll } from '@jest/globals';
+import { describe, expect, it, afterAll } from '@jest/globals';
 import request, { Response } from 'supertest';
 import * as cheerio from 'cheerio';
-import { Server } from 'http';
-import app from '../../src/server/index';
+import { app, server } from '../../src/server';
 
 describe('server', () => {
-  let server: Server;
-
-  beforeAll(() => {
-    server = app.listen(3000);
-  });
-
-  afterAll((done) => {
-    server.close(done);
+  afterAll(() => {
+    server.close();
   });
 
   it('serves the index.html file', async () => {
@@ -23,7 +16,7 @@ describe('server', () => {
     expect($('title').text()).toEqual('React Visualizer');
   });
 
-  it('serves the API', async () => {
+  it(`responds with 'Hello from the backend!'`, async () => {
     const response: Response = await request(app).get('/api');
 
     expect(response.status).toEqual(200);
