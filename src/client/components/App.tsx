@@ -19,7 +19,9 @@ function App(): JSX.Element {
   return (
     <div className="App">
       <p>Hello from the frontend!</p>
-      <button onClick={updateMessageHandler}>Update Message</button>
+      <button type="asdf" onClick={updateMessageHandler}>
+        Update Message
+      </button>
       {message && <p>{message}</p>}
     </div>
   );
