@@ -26,6 +26,6 @@
     ]
   },
   "settings": {
-    "import/core-modules": ["@jest/globals"]
+    "import/core-modules": ["@jest/globals", "supertest", "cheerio"]
   }
 }

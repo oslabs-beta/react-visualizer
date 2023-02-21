@@ -1,8 +1,8 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 import { Message } from 'types';
 
 describe('Message type', () => {
-  test('should allow strings', () => {
+  it('should allow strings', () => {
     const message: Message = 'Hello, world!';
     expect(typeof message).toBe('string');
   });

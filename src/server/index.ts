@@ -15,3 +15,5 @@ app.get('/api', (_req: Request, res: Response, _next: NextFunction): void => {
 });
 
 app.listen(PORT, (): void => {});
+
+export default app;
