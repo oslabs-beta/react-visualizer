@@ -5,23 +5,20 @@ import { Message } from 'types';
 function App(): JSX.Element {
   const [message, setMessage] = useState<Message>('');
 
-  const updateMessageHandler = (): void => {
-    fetch('/api')
-      .then((response) => response.text())
-      .then((newMessage) => {
-        setMessage(newMessage);
-      })
-      .catch((error) => {
-        throw error;
-      });
+  const updateMessageHandler = async (): Promise<void> => {
+    try {
+      const response = await fetch('/api');
+      const message = await response.text();
+      setMessage(message);
+    } catch (error) {
+      throw error;
+    }
   };
 
   return (
     <div className="App">
       <p>Hello from the frontend!</p>
-      <button type="button" onClick={updateMessageHandler}>
-        Update Message
-      </button>
+      <button onClick={updateMessageHandler}>Update Message</button>
       {message && <p>{message}</p>}
     </div>
   );
