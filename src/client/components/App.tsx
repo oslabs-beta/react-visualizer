@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './App.css';
 import { Message } from 'types';
 
 function App(): JSX.Element {
