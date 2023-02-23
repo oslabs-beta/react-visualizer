@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { describe, expect, it } from '@jest/globals';
 import React from 'react';
 import { render, screen } from '@testing-library/react';

@@ -1,5 +1,5 @@
 import { describe, expect, it, afterAll } from '@jest/globals';
-import request, { Response } from 'supertest';
+import request from 'supertest';
 import * as cheerio from 'cheerio';
 import { app, server } from '../../src/server';
 
@@ -9,7 +9,7 @@ describe('server', () => {
   });
 
   it('serves the index.html file', async () => {
-    const response: Response = await request(app).get('/');
+    const response = await request(app).get('/');
     expect(response.status).toEqual(200);
 
     const $ = cheerio.load(response.text);
@@ -17,7 +17,7 @@ describe('server', () => {
   });
 
   it(`responds with 'Hello from the backend!'`, async () => {
-    const response: Response = await request(app).get('/api');
+    const response = await request(app).get('/api');
 
     expect(response.status).toEqual(200);
     expect(response.text).toEqual('Hello from the backend!');
