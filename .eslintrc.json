@@ -26,6 +26,12 @@
     ]
   },
   "settings": {
-    "import/core-modules": ["@jest/globals", "supertest", "cheerio"]
+    "import/core-modules": [
+      "@jest/globals",
+      "supertest",
+      "cheerio",
+      "@testing-library/react",
+      "@testing-library/jest-dom/extend-expect"
+    ]
   }
 }

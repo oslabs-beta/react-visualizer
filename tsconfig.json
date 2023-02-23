@@ -21,7 +21,7 @@
     "paths": {
       "*": ["node_modules/*", "src/types/*"]
     },
-    "types": ["jest"]
+    "types": ["node", "jest", "@testing-library/jest-dom"]
   },
   "ts-node": {
     "esm": true
