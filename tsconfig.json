@@ -20,11 +20,12 @@
     "baseUrl": "./",
     "paths": {
       "*": ["node_modules/*", "src/types/*"]
-    }
+    },
+    "types": ["node", "jest", "@testing-library/jest-dom"]
   },
   "ts-node": {
     "esm": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "build"]
+  "include": ["src/**/*", "__tests__/**/*"],
+  "exclude": ["node_modules", "build", "jest.config.ts"]
 }

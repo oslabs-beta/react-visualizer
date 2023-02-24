@@ -14,4 +14,6 @@ app.get('/api', (_req: Request, res: Response, _next: NextFunction): void => {
   res.send('Hello from the backend!');
 });
 
-app.listen(PORT, (): void => {});
+const server = app.listen(PORT);
+
+export { app, server };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './App.css';
 import { Message } from 'types';
+import './App.css';
 
 function App(): JSX.Element {
   const [message, setMessage] = useState<Message>('');
@@ -18,7 +18,7 @@ function App(): JSX.Element {
 
   return (
     <div className="App">
-      <p>Hello from the frontend!</p>
+      <h1>Hello from the frontend!</h1>
       <button type="button" onClick={updateMessageHandler}>
         Update Message
       </button>
