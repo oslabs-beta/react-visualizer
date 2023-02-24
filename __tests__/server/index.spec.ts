@@ -1,4 +1,3 @@
-import { describe, expect, it, afterAll } from '@jest/globals';
 import request from 'supertest';
 import * as cheerio from 'cheerio';
 import { app, server } from '../../src/server';

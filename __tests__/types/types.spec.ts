@@ -1,4 +1,3 @@
-import { describe, expect, it } from '@jest/globals';
 import { Message } from 'types';
 
 describe('Message type', () => {
