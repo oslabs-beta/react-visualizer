@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Message } from 'types';
-// import './App.css';
+import './App.css';
 
 function App(): JSX.Element {
   const [message, setMessage] = useState<Message>('');
