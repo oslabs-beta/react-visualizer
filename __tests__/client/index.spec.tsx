@@ -4,6 +4,6 @@
 
 describe('App', () => {
   it('renders the App component', () => {
-    expect(true).toBe(true);
+    expect(false).toBe(true);
   });
 });
