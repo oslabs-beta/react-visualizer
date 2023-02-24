@@ -4,10 +4,10 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 export default {
   mode: 'development',
-  entry: './src/client/index.tsx',
+  // entry: './src/client/index.tsx',
   output: {
     path: path.resolve(__dirname, 'build', 'public'),
-    filename: 'bundle.js',
+    // filename: 'bundle.js',
     publicPath: '/',
   },
   resolve: {
