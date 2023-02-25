@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest --detectOpenHandles",
-    "check": "npm run lint && npm run test && npm run build"
+    "coverage": "jest --detectOpenHandles --collect-coverage",
+    "check": "npm run build && npm run lint && npm run coverage"
   },
   "repository": {
     "type": "git",
