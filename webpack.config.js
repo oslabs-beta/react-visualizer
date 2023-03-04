@@ -4,10 +4,15 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 export default {
   mode: 'development',
-  entry: './src/client/index.tsx',
+  entry: {
+    app: './src/client/index.tsx',
+    background: './src/extension/background.js',
+    content: './src/extension/contentScript.ts',
+    backend: './src/server/index.ts',
+  },
   output: {
     path: path.resolve(__dirname, 'build', 'public'),
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
     publicPath: '/',
   },
   resolve: {
@@ -17,7 +22,7 @@ export default {
     rules: [
       {
         test: /\.(ts|tsx)$/,
-        exclude: /node_modules/,
+        exclude: [/node_modules/],
         use: 'ts-loader',
       },
       {

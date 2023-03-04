@@ -1,0 +1,33 @@
+{
+    "manifest_version": 3,
+    "name": "Tree-Builder",
+    "version": "1.0",
+    "devtools_page": "devtools.html",
+    "description": "Chrome Extension to visualize React concurrent rendering",
+    
+    "action": {
+      "default_popup": "index.html"
+    },
+    "background": {
+      "service_worker": "public/background.bundle.js"
+    },
+    "content_scripts":[
+        {
+          "matches": ["<all_urls>"],
+          "js": ["public/content.bundle.js"]
+        }
+    ],
+    "icons":{
+       "48":"assets/C_React_logo.png"
+    },
+    "web_accessible_resources": [
+        {
+          "resources": ["public/backend.bundle.js"],
+          "matches": ["<all_urls>"]
+        }
+    ],
+    "permissions": [
+        "activeTab", "scripting"
+    ],
+    "host_permissions": ["<all_urls>"]
+}
