@@ -2,7 +2,7 @@
 // @ts-nocheck
 
 chrome.devtools.panels.create(
-  'C-Render',
+  'C-React',
   'assets/C_React_Logo.png',
   'Panel.html',
   () => {

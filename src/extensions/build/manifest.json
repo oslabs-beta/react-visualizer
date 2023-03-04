@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Tree-Builder",
+    "name": "C-React",
     "version": "1.0",
     "devtools_page": "devtools.html",
     "description": "Chrome Extension to visualize React concurrent rendering",

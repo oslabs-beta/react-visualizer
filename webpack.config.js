@@ -6,12 +6,12 @@ export default {
   mode: 'development',
   entry: {
     app: './src/client/index.tsx',
-    background: './src/extension/background.js',
-    content: './src/extension/contentScript.ts',
+    background: './src/extensions/background.js',
+    content: './src/extensions/contentScript.js',
     backend: './src/server/index.ts',
   },
   output: {
-    path: path.resolve(__dirname, 'build', 'public'),
+    path: path.resolve(__dirname, 'src/extensions/build/public'),
     filename: '[name].bundle.js',
     publicPath: '/',
   },
