@@ -1,3 +1,3 @@
-const crender = () => {};
+const cRender = () => {};
 
-export default crender;
+export default cRender;

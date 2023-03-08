@@ -1,4 +1,5 @@
-import { FiberTags, OpaqueHandleAlias } from 'types';
+import { FiberTags } from 'enums';
+import { OpaqueHandleAlias } from 'interfaces';
 import hasSuspense from '../../src/lib/hasSuspense';
 
 describe('hasSuspense', () => {

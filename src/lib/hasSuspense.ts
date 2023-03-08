@@ -1,4 +1,5 @@
-import { FiberTags, OpaqueHandleAlias } from 'types';
+import { FiberTags } from 'enums';
+import { OpaqueHandleAlias } from 'interfaces';
 
 const hasSuspense = (internalInstanceHandle: OpaqueHandleAlias): boolean => {
   let fiber = internalInstanceHandle;
