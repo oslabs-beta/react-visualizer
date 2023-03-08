@@ -9,7 +9,7 @@ chrome.runtime.onInstalled.addListener(async()=> {
   chrome.contextMenus.create({
     "id": "cReactContextMenu",
     "title": "C-React",
-    //"contexts": ["selection"]
+    "contexts": ["selection"]
   });
 });
 
@@ -22,14 +22,6 @@ chrome.contextMenus.onClicked.addListener((info, tab)=>{
     chrome.windows.create({
       url: ('panel.html'),
     })
-    // chrome.windows.create({
-    //   type: 'panel',
-    //   left: 0,
-    //   top: 0,
-    //   width: 1000,
-    //   height: 1000,
-    //   url: chrome.runtime.getURL('panel.html'),
-    // })
   }
 });
 

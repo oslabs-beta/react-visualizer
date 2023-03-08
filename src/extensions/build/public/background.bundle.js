@@ -39,16 +39,11 @@ chrome.runtime.onInstalled.addListener(async()=> {
 
 chrome.contextMenus.onClicked.addListener((info, tab)=>{
   console.log("item clicked");
-  console.log(info);
+  console.log(info.menuItemId);
   if(info.menuItemId == "cReactContextMenu"){
     console.log('onclikc working')
     chrome.windows.create({
-      type: 'panel',
-      left: 0,
-      top: 0,
-      width: 1000,
-      height: 1000,
-      url: chrome.runtime.getURL('panel.html'),
+      url: ('panel.html'),
     })
   }
 });
