@@ -26,6 +26,7 @@
   "ts-node": {
     "esm": true
   },
-  "include": ["src/**/*", "__tests__/**/*"],
-  "exclude": ["node_modules", "build", "jest.config.ts"]
+  // "include": ["src/**/*", "__tests__/**/*"],
+  "include": ["src/client", "src/server", "src/types", "__tests__/**/*"],
+  "exclude": ["node_modules", "build", "jest.config.ts", "src/extensions/**/*"]
 }
