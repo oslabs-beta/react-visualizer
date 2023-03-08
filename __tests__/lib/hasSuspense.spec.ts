@@ -3,7 +3,7 @@ import { OpaqueHandleAlias } from 'interfaces';
 import hasSuspense from '../../src/lib/hasSuspense';
 
 describe('hasSuspense', () => {
-  it('should return true if a suspense fiber tag is found', () => {
+  it('should return true if a fiber tag for suspense is found', () => {
     const fakeInternalInstanceHandle: OpaqueHandleAlias = {
       tag: FiberTags.suspense,
       return: null,
@@ -13,7 +13,7 @@ describe('hasSuspense', () => {
     expect(foundSuspense).toBe(true);
   });
 
-  it('should return false if a suspense fiber tag is not found', () => {
+  it('should return false if a fiber tag for suspense is not found', () => {
     const fakeInternalInstanceHandle: OpaqueHandleAlias = {
       tag: 0,
       return: null,
