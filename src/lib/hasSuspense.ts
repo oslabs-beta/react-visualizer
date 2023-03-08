@@ -4,8 +4,9 @@ import { OpaqueHandleAlias } from 'interfaces';
 const hasSuspense = (internalInstanceHandle: OpaqueHandleAlias): boolean => {
   let fiber = internalInstanceHandle;
   let traversalCount = 0;
+  const traversalLimit = 5;
 
-  while (fiber && traversalCount < 5) {
+  while (fiber && traversalCount < traversalLimit) {
     if (fiber.tag === FiberTags.suspense) {
       return true;
     }
