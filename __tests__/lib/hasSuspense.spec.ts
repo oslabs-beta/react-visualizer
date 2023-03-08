@@ -14,8 +14,10 @@ describe('hasSuspense', () => {
   });
 
   it('should return false if a fiber tag for suspense is not found', () => {
+    const nonSuspenseFiberTag = 0;
+
     const fakeInternalInstanceHandle: OpaqueHandleAlias = {
-      tag: 0,
+      tag: nonSuspenseFiberTag,
       return: null,
     };
 
