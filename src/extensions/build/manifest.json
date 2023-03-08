@@ -14,7 +14,9 @@
         }
     ],
     "icons":{
-       "48":"assets/C_React_logo.png"
+       "16": "assets/logo_16.png",
+       "48": "assets/logo_48.png",
+       "128": "assets/logo_128.png"
     },
     "web_accessible_resources": [
         {

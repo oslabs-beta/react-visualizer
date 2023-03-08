@@ -28,44 +28,49 @@ const extensions = 'https://developer.chrome.com/docs/extensions';
 const webstore = 'https://developer.chrome.com/docs/webstore';
 
 
-chrome.runtime.onInstalled.addListener(function() {
+chrome.runtime.onInstalled.addListener(async()=> {
   chrome.contextMenus.create({
-    "id": "sampleContextMenu",
-    "title": "Sample Context Menu",
+    "id": "cReactContextMenu",
+    "title": "C-React",
     "contexts": ["selection"]
   });
 });
-// chrome.action.onClicked.addListener(async (tab) => {
-//   console.log(
-//     'background script running'
-//   )
-  // if (tab.url.startsWith(extensions) || tab.url.startsWith(webstore)) {
-  //   // Retrieve the action badge to check if the extension is 'ON' or 'OFF'
-  //   const prevState = await chrome.action.getBadgeText({ tabId: tab.id });
-  //   // Next state will always be the opposite
-  //   const nextState = prevState === 'ON' ? 'OFF' : 'ON'
 
-  //   // Set the action badge to the next state
-  //   await chrome.action.setBadgeText({
-  //     tabId: tab.id,
-  //     text: nextState,
-  //   });
 
-  //   if (nextState === "ON") {
-  //       // Insert the CSS file when the user turns the extension on
-  //       await chrome.scripting.insertCSS({
-  //         files: ["focus-mode.css"],
-  //         target: { tabId: tab.id },
-  //       });
-  //     } else if (nextState === "OFF") {
-  //       // Remove the CSS file when the user turns the extension off
-  //       await chrome.scripting.removeCSS({
-  //         files: ["focus-mode.css"],
-  //         target: { tabId: tab.id },
-  //       });
-  //     }
-  //   }
-  // });
+chrome.contextMenus.onClicked.addListener((info, tab)=>{
+  console.log("item clicked");
+  console.log(info);
+  if(info.menuItemId == "cReactContextMenu"){
+    console.log('onclikc working')
+    chrome.windows.create({
+      type: 'panel',
+      left: 0,
+      top: 0,
+      width: 1000,
+      height: 1000,
+      url: chrome.runtime.getURL('panel.html'),
+    })
+  }
+});
+
+// Background page -- background.js
+chrome.runtime.onConnect.addListener(function(devToolsConnection) {
+  // assign the listener function to a variable so we can remove it later
+  var devToolsListener = function(message, sender, sendResponse) {
+      // Inject a content script into the identified tab
+      console.log(message.tabId);
+      chrome.scripting.executeScript(message.tabId,
+          { file: message.scriptToInject });
+  }
+  // add the listener
+  devToolsConnection.onMessage.addListener(devToolsListener);
+
+  devToolsConnection.onDisconnect.addListener(function() {
+       devToolsConnection.onMessage.removeListener(devToolsListener);
+  });
+});
+
+
 
 /******/ })()
 ;
