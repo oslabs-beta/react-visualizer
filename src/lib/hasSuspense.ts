@@ -1,7 +1,9 @@
 import { FiberTags } from 'enums';
-import { OpaqueHandleAlias } from 'interfaces';
+import { OpaqueHandleInterface } from 'interfaces';
 
-const hasSuspense = (internalInstanceHandle: OpaqueHandleAlias): boolean => {
+const hasSuspense = (
+  internalInstanceHandle: OpaqueHandleInterface
+): boolean => {
   let fiber = internalInstanceHandle;
   let traversalCount = 0;
   const traversalLimit = 5;
@@ -11,7 +13,7 @@ const hasSuspense = (internalInstanceHandle: OpaqueHandleAlias): boolean => {
       return true;
     }
 
-    fiber = fiber.return as OpaqueHandleAlias;
+    fiber = fiber.return as OpaqueHandleInterface;
     traversalCount += 1;
   }
 
