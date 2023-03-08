@@ -28,8 +28,10 @@
   "homepage": "https://github.com/oslabs-beta/react-visualizer#readme",
   "dependencies": {
     "@types/chrome": "^0.0.219",
+    "d3": "^7.8.2",
     "express": "^4.18.2",
     "react": "^18.2.0",
+    "react-d3-tree": "^3.5.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {

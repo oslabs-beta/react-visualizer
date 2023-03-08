@@ -1,6 +1,14 @@
+/* eslint-disable */
+// @ts-nocheck
+
 import React, { useState } from 'react';
 import { Message } from 'types';
 import './App.css';
+import treeNodes from '../../extensions/contentScript.js';
+import Tree from 'react-d3-tree';
+
+console.log('this is treeNodes showing from app.tsx');
+console.log(treeNodes);
 
 function App(): JSX.Element {
   const [message, setMessage] = useState<Message>('');
@@ -23,6 +31,9 @@ function App(): JSX.Element {
         Update Message
       </button>
       {message && <p>{message}</p>}
+      <div id="treeWrapper" style={{ width: '50em', height: '20em' }}>
+        <Tree data={treeNodes} />
+      </div>
     </div>
   );
 }
