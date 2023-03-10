@@ -33972,6 +33972,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _App_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./App.css */ "./src/client/components/App.css");
+/* eslint-disable prefer-arrow-callback */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable vars-on-top */
+/* eslint-disable func-names */
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+// @ts-nocheck
 
 
 function App() {
@@ -33986,6 +33994,21 @@ function App() {
             throw error;
         });
     };
+    chrome.storage.local.get(['treeData'], (result) => {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        console.log(`User is ${result.treeData}`);
+        // you can use the variable or set to any state variable from here
+    });
+    const port = chrome.runtime.connect({ name: "knockknock" });
+    port.postMessage({ joke: "Knock knock" });
+    console.log(port.name);
+    port.onMessage.addListener(function (msg) {
+        console.log(msg.question);
+        if (msg.question === "Who's there?")
+            port.postMessage({ answer: "Madame" });
+        else if (msg.question === "Madame who?")
+            port.postMessage({ answer: "Madame... Bovary" });
+    });
     return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "App" },
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, "Hello from the frontend!"),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", { type: "button", onClick: updateMessageHandler }, "Update Message"),

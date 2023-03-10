@@ -23,11 +23,11 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* eslint-disable */
 // @ts-nocheck
+
 //alert('content script running');
 console.log('hello, content script is finally running');
 
 
-console.log(document.body);
 console.log(document.querySelector(':root'));
 console.log(document.documentElement);
 console.log(document.getElementsByTagName("html"))
@@ -54,6 +54,31 @@ while (currentNode) {
     currentNode = treeWalker.nextNode();
 }
 console.log(nodeList);
+let treeData = JSON.stringify(nodeList);
+let treeData3 = JSON.parse(JSON.stringify(nodeList));
+
+console.log('0',treeData)
+console.log('3',treeData3)
+
+
+chrome.storage.local.set({ treeData: treeData }).then(() => {
+  console.log("Value is set to " + treeData);
+});
+
+//listening to content script connection
+chrome.runtime.onConnect.addListener(function(port) {
+  //console.assert(port.name === "knockknock");
+  port.onMessage.addListener(function(msg) {
+    console.log(msg.joke);
+    console.log(msg.answer);
+    if (msg.joke === "Knock knock")
+      port.postMessage({question: "Who's there?"});
+    else if (msg.answer === "Madame")
+      port.postMessage({question: "Madame who?"});
+    else if (msg.answer === "Madame... Bovary")
+      port.postMessage({question: "I don't get it."});
+  });
+});
 
 
 

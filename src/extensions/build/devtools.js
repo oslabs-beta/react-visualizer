@@ -27,13 +27,22 @@ var backgroundPageConnection = chrome.runtime.connect({
   name: "devtools-page"
 });
 
+
+
+//inject the content script
+backgroundPageConnection.postMessage({
+  name: 'init',
+  tabId: chrome.devtools.inspectedWindow.tabId,
+  scriptToInject: "contentScript.js"
+});
+
 backgroundPageConnection.onMessage.addListener(function (message) {
   // Handle responses from the background page, if any
   console.log(message);
 });
 
 // Relay the tab ID to the background page
-backgroundPageConnection.postMessage({
-  tabId: chrome.devtools.inspectedWindow.tabId,
-  scriptToInject: "contentScript.js"
-});
+// backgroundPageConnection.postMessage({
+//   name: 'init',
+//   tabId: chrome.devtools.inspectedWindow.tabId
+// });

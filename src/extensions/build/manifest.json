@@ -20,12 +20,12 @@
     },
     "web_accessible_resources": [
         {
-          "resources": ["public/backend.bundle.js"],
+          "resources": ["public/backend.bundle.js",  "panel.html"],
           "matches": ["<all_urls>"]
         }
     ],
     "permissions": [
-        "activeTab", "scripting", "contextMenus", "tabs"
+        "activeTab", "scripting", "contextMenus", "tabs", "storage"
     ],
     "host_permissions": ["<all_urls>"]
 }
