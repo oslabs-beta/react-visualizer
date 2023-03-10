@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 /* eslint-disable prefer-arrow-callback */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable vars-on-top */
@@ -30,16 +31,21 @@ function App(): JSX.Element {
     // you can use the variable or set to any state variable from here
   });
 
-  const port = chrome.runtime.connect({name: "knockknock"});
-  port.postMessage({joke: "Knock knock"});
-  console.log(port.name);
-  port.onMessage.addListener(function(msg) {
-    console.log(msg.question);
-    if (msg.question === "Who's there?")
-      port.postMessage({answer: "Madame"});
-    else if (msg.question === "Madame who?")
-      port.postMessage({answer: "Madame... Bovary"});
+  //listening to content script connection
+  chrome.runtime.onConnect.addListener(function(port) {
+    //console.assert(port.name === "knockknock");
+    port.onMessage.addListener(function(msg) {
+      console.log(msg.joke);
+      console.log(msg.answer);
+      if (msg.joke === "Knock knock")
+        port.postMessage({question: "Who's there?"});
+      else if (msg.answer === "Madame")
+        port.postMessage({question: "Madame who?"});
+      else if (msg.answer === "Madame... Bovary")
+        port.postMessage({question: "I don't get it."});
+    });
   });
+  
 
   return (
     <div className="App">

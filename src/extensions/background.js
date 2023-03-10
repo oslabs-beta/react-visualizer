@@ -34,11 +34,12 @@ chrome.runtime.onConnect.addListener(function(devToolsConnection) {
       // Inject a content script into the identified tab
       console.log(message.tabId);
       connections[message.tabId] = devToolsConnection;
+      console.log(message.scriptToInject);
       chrome.scripting.executeScript(
-          message.tabId,
+          // message.tabId,
           // { file: message.scriptToInject }
           {
-            //target : { tabId: message.tabId },
+            tabId: message.tabId ,
             files : [message.scriptToInject],
           }
           ).then(() => console.log("script injected"));
@@ -48,10 +49,10 @@ chrome.runtime.onConnect.addListener(function(devToolsConnection) {
   devToolsConnection.onMessage.addListener(devToolsListener);
 
   devToolsConnection.onDisconnect.addListener(function() {
-       devToolsConnection.onMessage.removeListener(devToolsListener);
+       //devToolsConnection.onMessage.removeListener(devToolsListener);
        var tabs = Object.keys(connections);
         for (var i=0, len=tabs.length; i < len; i++) {
-          if (connections[tabs[i]] == port) {
+          if (connections[tabs[i]] == devToolsConnection) {
             delete connections[tabs[i]]
             break;
           }
@@ -62,18 +63,19 @@ chrome.runtime.onConnect.addListener(function(devToolsConnection) {
 
 // Receive message from content script and relay to the devTools page for the
 // current tab
-// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-//     // Messages from content scripts should have sender.tab set
-//     if (sender.tab) {
-//       var tabId = sender.tab.id;
-//       if (tabId in connections) {
-//         connections[tabId].postMessage(request);
-//       } else {
-//         console.log("Tab not found in connection list.");
-//       }
-//     } else {
-//       console.log("sender.tab not defined.");
-//     }
-//     return true;
-// });
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    // Messages from content scripts should have sender.tab set
+    if (sender.tab) {
+      console.log(sender.tab.id);
+      var tabId = sender.tab.id;
+      if (tabId in connections) {
+        connections[tabId].postMessage(request);
+      } else {
+        console.log("Tab not found in connection list.");
+      }
+    } else {
+      console.log("sender.tab not defined.");
+    }
+    return true;
+});
 
