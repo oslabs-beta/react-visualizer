@@ -3,7 +3,7 @@ export const enum FiberTags {
 }
 
 export const enum FiberLanes {
-  TransitionHyrdationLane = 6,
+  TransitionHydrationLane = 6,
   TransitionLane1 = 7,
   TransitionLane2 = 8,
   TransitionLane3 = 9,
