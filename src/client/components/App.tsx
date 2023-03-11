@@ -5,12 +5,12 @@
 import React, { useState, useEffect } from 'react';
 import { Message } from 'types';
 import './App.css';
-// import treeNodes from '../../extensions/contentScript.js';
+import treeNodes from '../../extensions/contentScript.js';
 
 import Tree from 'react-d3-tree';
 
 // console.log('this is treeNodes showing from app.tsx');
-
+console.log(treeNodes);
 // const treeData = JSON.parse(chrome.storage.local.get(['treeData']));
 
 // , (result) => {
@@ -20,26 +20,15 @@ import Tree from 'react-d3-tree';
 // })
 // );
 
-// var port = chrome.tabs.connect({ name: 'knockknock' });
-// // var port = chrome.runtime.connect({ name: 'knockknock' });
-// port.postMessage({ question: "Who's there?" });
+// port.postMessage({ joke: 'Knock knock' });
 // port.onMessage.addListener(function (msg) {
-//   if (msg.answer === 'Madame') port.postMessage({ question: 'Madame who?' });
+//   if (msg.question === "Who's there?") port.postMessage({ answer: 'Madame' });
 //   else if (msg.question === 'Madame who?')
 //     port.postMessage({ answer: 'Madame... Bovary' });
 // });
 
-// chrome.runtime.onConnect.addListener(function (port) {
-//   console.assert(port.name === 'knockknock');
-//   port.onMessage.addListener(function (msg) {
-//     if (msg.joke === 'Knock knock')
-//       port.postMessage({ question: "Who's there?" });
-//     else if (msg.answer === 'Madame')
-//       port.postMessage({ question: 'Madame who?' });
-//     else if (msg.answer === 'Madame... Bovary')
-//       port.postMessage({ question: "I don't get it." });
-//   });
-// });
+//1206507966
+//1206507981
 
 const dummyData = {
   name: 'root',
@@ -158,6 +147,36 @@ function App(): JSX.Element {
   //beg of example
   const [nodes, setNodes] = useState({});
 
+  useEffect(() => {
+    var port = chrome.runtime.connect({ name: 'knockknock' });
+    // chrome.runtime.onConnect.addListener(function (port) {
+    // var port = chrome.tabs.connect({ tabId: 1206507966, name: 'knockknock' });
+    port.postMessage({ question: "Who's there?" });
+    port.onMessage.addListener(function (msg) {
+      console.log('msg from app');
+      console.log(msg);
+      console.log('logging joke from app' + port.joke);
+
+      if (msg.answer === 'Madame')
+        port.postMessage({ question: 'Madame who?' });
+      else if (msg.answer === 'Madame... Bovary')
+        port.postMessage({ answer: 'oooo' });
+      // });
+    });
+
+    chrome.runtime.onConnect.addListener(function (port) {
+      console.assert(port.name === 'knockknock');
+      port.onMessage.addListener(function (msg) {
+        if (msg.joke === 'Knock knock')
+          port.postMessage({ question: "Who's there?" });
+        else if (msg.answer === 'Madame')
+          port.postMessage({ question: 'Madame who?' });
+        else if (msg.answer === 'Madame... Bovary')
+          port.postMessage({ question: "I don't get it." });
+      });
+    });
+  });
+
   // React.useEffect(() => {
   //   /**
   //    * We can't use "chrome.runtime.sendMessage" for sending messages from React.
@@ -246,7 +265,7 @@ function App(): JSX.Element {
       {message && <p>{message}</p>}
       <div id="treeWrapper" style={{ width: '100em', height: '100em' }}>
         <Tree
-          data={dummyData}
+          data={treeNodes}
           nodeSize={nodeSize}
           // orientation="vertical"
           pathFunc="step"
@@ -258,3 +277,15 @@ function App(): JSX.Element {
 }
 
 export default App;
+
+//new 3/11
+const backgroundPageConnection = chrome.runtime.connect({
+  name: 'devtools-page',
+});
+
+// Relay the tab ID to the background service worker
+console.log('about to post message from App.');
+backgroundPageConnection.postMessage({
+  name: 'init',
+  tabId: chrome.devtools.inspectedWindow.tabId,
+});

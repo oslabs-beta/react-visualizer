@@ -9,7 +9,8 @@
     },
     "content_scripts":[
         {
-          "matches": ["<all_urls>"],
+          "matches": ["<all_urls>", "http://localhost/*"],
+          "run_at": "document_idle",
           "js": ["public/content.bundle.js"]
         }
     ],
@@ -20,7 +21,7 @@
     },
     "web_accessible_resources": [
         {
-          "resources": ["public/backend.bundle.js"],
+          "resources": ["../../client/components/App.tsx", "public/background.bundle.js", "./contentScript.js", "./injectScript.js"],
           "matches": ["<all_urls>"]
         }
     ],

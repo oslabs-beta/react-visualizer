@@ -73065,7 +73065,6 @@ __webpack_require__.r(__webpack_exports__);
 function grabTreeFromBrowser() {
   const root = document.getElementById('root');
   // const root = document.documentElement;
-  // const root = document.querySelector(':root');
 
   //create tree walker
   const tree = document.createTreeWalker(root);
@@ -73140,10 +73139,24 @@ function grabTreeFromBrowser() {
       }
     }
   }
-  console.log(nodeObj);
+  // console.log(nodeObj);
+  chrome.runtime.onConnect.addListener(function (port) {
+    console.assert(port.name === 'knockknock');
+    port.onMessage.addListener(function (msg) {
+      if (msg.joke === 'Knock knock')
+        port.postMessage({ question: "Who's there?" });
+      else if (msg.answer === 'Madame')
+        port.postMessage({ question: 'Madame who?' });
+      else if (msg.answer === 'Madame... Bovary')
+        port.postMessage({ node: JSON.stringify(nodeObj) });
+    });
+  });
+
   return nodeObj;
 }
 const treeNodes = grabTreeFromBrowser();
+console.log('logging tree nodes outside function ');
+console.log(treeNodes);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (treeNodes);
 
 // export default function OrgChartTree() {
@@ -73154,6 +73167,50 @@ const treeNodes = grabTreeFromBrowser();
 //     </div>
 //   );
 // }
+
+var port = chrome.runtime.connect({ name: 'knockknock' });
+port.postMessage({ joke: 'Knock knock' });
+console.log(port);
+port.onMessage.addListener(function (msg) {
+  console.log('msg is ');
+  console.log(msg);
+  //alert('msg from content script');
+  if (msg.question === "Who's there?") port.postMessage({ answer: 'Madame' });
+  else if (msg.question === 'Madame who?')
+    port.postMessage({ answer: 'Madame... Bovary' });
+});
+
+chrome.runtime.onMessage.addListener(function (request, sender) {
+  // If we get the request from the Background script
+  if (request.line == 'countparas') {
+    // Select all `<p>` elements in the document body
+    var paras = document.body.querySelectorAll('p');
+    // If the number of `<p>` elements is greater than zero
+    if (paras.length > 0) {
+      // Assigning that number to a variable called 'theCount'
+      // and convert it to a string format
+      var theCount = paras.length + '';
+      // Send the count back to the background script
+      chrome.runtime.sendMessage({ count: theCount });
+    } else {
+      alert('There does not seem to be any `<p>` elements in this page!');
+    }
+  }
+});
+
+// //new 3/11
+// document.addEventListener('click', (event) => {
+//   chrome.runtime.sendMessage(
+//     {
+//       click: true,
+//       xPosition: event.clientX + document.body.scrollLeft,
+//       yPosition: event.clientY + document.body.scrollTop,
+//     },
+//     (response) => {
+//       console.log('Received response', response);
+//     }
+//   );
+// });
 
 })();
 

@@ -9,7 +9,6 @@ import React from 'react';
 function grabTreeFromBrowser() {
   const root = document.getElementById('root');
   // const root = document.documentElement;
-  // const root = document.querySelector(':root');
 
   //create tree walker
   const tree = document.createTreeWalker(root);
@@ -48,18 +47,6 @@ function grabTreeFromBrowser() {
       context.attributes.content = domNode.textContent;
     }
 
-    // //check hydration status of memoized react fiber
-    // if (Object.keys(domNode).length > 0 && domNode[Object.keys(domNode)[0]]) {
-    //   let fiber = domNode[Object.keys(domNode)[0]];
-    //   if (fiber.memoizedState !== null && fiber.memoizedState !== undefined) {
-    //     if (
-    //       fiber.memoizedState.isDehydrated !== null &&
-    //       fiber.memoizedState.isDehydrated !== undefined
-    //     ) {
-    //       context.attributes.hydrated = !fiber.memoizedState.isDehydrated;
-    //     }
-    //   }
-    // }
     const keys = Object.keys(domNode);
     if (keys.length > 1 && keys[1].includes('__reactProps')) {
       const propKeys = Object.keys(domNode[keys[1]]);
@@ -84,17 +71,66 @@ function grabTreeFromBrowser() {
       }
     }
   }
-  console.log(nodeObj);
+  // console.log(nodeObj);
+  chrome.runtime.onConnect.addListener(function (port) {
+    console.assert(port.name === 'knockknock');
+    port.onMessage.addListener(function (msg) {
+      if (msg.joke === 'Knock knock')
+        port.postMessage({ question: "Who's there?" });
+      else if (msg.answer === 'Madame')
+        port.postMessage({ question: 'Madame who?' });
+      else if (msg.answer === 'Madame... Bovary')
+        port.postMessage({ node: JSON.stringify(nodeObj) });
+    });
+  });
+
   return nodeObj;
 }
 const treeNodes = grabTreeFromBrowser();
+console.log('logging tree nodes outside function ');
+console.log(treeNodes);
 export default treeNodes;
 
-// export default function OrgChartTree() {
-//   return (
-//     // `<Tree />` will fill width/height of its container; in this case `#treeWrapper`.
-//     <div id="treeWrapper" style={{ width: '50em', height: '20em' }}>
-//       <Tree data={treeNodes} />
-//     </div>
+var port = chrome.runtime.connect({ name: 'knockknock' });
+port.postMessage({ joke: 'Knock knock' });
+console.log(port);
+port.onMessage.addListener(function (msg) {
+  console.log('msg is ');
+  console.log(msg);
+  //alert('msg from content script');
+  if (msg.question === "Who's there?") port.postMessage({ answer: 'Madame' });
+  else if (msg.question === 'Madame who?')
+    port.postMessage({ answer: 'Madame... Bovary' });
+});
+
+chrome.runtime.onMessage.addListener(function (request, sender) {
+  // If we get the request from the Background script
+  if (request.line == 'countparas') {
+    // Select all `<p>` elements in the document body
+    var paras = document.body.querySelectorAll('p');
+    // If the number of `<p>` elements is greater than zero
+    if (paras.length > 0) {
+      // Assigning that number to a variable called 'theCount'
+      // and convert it to a string format
+      var theCount = paras.length + '';
+      // Send the count back to the background script
+      chrome.runtime.sendMessage({ count: theCount });
+    } else {
+      alert('There does not seem to be any `<p>` elements in this page!');
+    }
+  }
+});
+
+// //new 3/11
+// document.addEventListener('click', (event) => {
+//   chrome.runtime.sendMessage(
+//     {
+//       click: true,
+//       xPosition: event.clientX + document.body.scrollLeft,
+//       yPosition: event.clientY + document.body.scrollTop,
+//     },
+//     (response) => {
+//       console.log('Received response', response);
+//     }
 //   );
-// }
+// });
