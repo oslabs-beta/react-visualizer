@@ -6,6 +6,7 @@ describe('hasSuspense', () => {
   it('should return true if a fiber tag for suspense is found', () => {
     const fakeInternalInstanceHandle: OpaqueHandleInterface = {
       tag: FiberTags.suspense,
+      lane: 8,
       return: null,
     };
 
@@ -18,6 +19,7 @@ describe('hasSuspense', () => {
 
     const fakeInternalInstanceHandle: OpaqueHandleInterface = {
       tag: nonSuspenseFiberTag,
+      lane: 8,
       return: null,
     };
 
