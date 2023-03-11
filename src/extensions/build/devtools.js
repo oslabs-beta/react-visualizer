@@ -27,13 +27,10 @@ var backgroundPageConnection = chrome.runtime.connect({
   name: "devtools-page"
 });
 
-
-
 //inject the content script
 backgroundPageConnection.postMessage({
-  name: 'init',
   tabId: chrome.devtools.inspectedWindow.tabId,
-  scriptToInject: "contentScript.js"
+  scriptToInject: "public/content.bundle.js"
 });
 
 backgroundPageConnection.onMessage.addListener(function (message) {

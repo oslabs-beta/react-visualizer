@@ -33972,6 +33972,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _App_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./App.css */ "./src/client/components/App.css");
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable spaced-comment */
 /* eslint-disable prefer-arrow-callback */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -33985,6 +33986,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function App() {
     const [message, setMessage] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+    let treeData1 = {};
     const updateMessageHandler = () => {
         fetch('/api')
             .then((response) => response.text())
@@ -34002,16 +34004,19 @@ function App() {
     });
     //listening to content script connection
     chrome.runtime.onConnect.addListener(function (port) {
-        //console.assert(port.name === "knockknock");
+        console.assert(port.name === "knockknock");
         port.onMessage.addListener(function (msg) {
-            console.log(msg.joke);
-            console.log(msg.answer);
-            if (msg.joke === "Knock knock")
+            if (msg.joke === "Knock knock") {
+                console.log(msg.joke);
+                console.log(msg.answer);
                 port.postMessage({ question: "Who's there?" });
-            else if (msg.answer === "Madame")
-                port.postMessage({ question: "Madame who?" });
-            else if (msg.answer === "Madame... Bovary")
+            }
+            else if (msg.treeData) {
+                console.log(JSON.parse(msg.treeData));
+            }
+            else if (msg.answer === "Madame... Bovary") {
                 port.postMessage({ question: "I don't get it." });
+            }
         });
     });
     return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "App" },

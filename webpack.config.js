@@ -7,7 +7,7 @@ export default {
   entry: {
     app: './src/client/index.tsx',
     background: './src/extensions/background.js',
-    content: './src/extensions/contentScript.js',
+    content: './src/extensions/content-script.js',
     //backend: './src/server/index.ts',
   },
   output: {

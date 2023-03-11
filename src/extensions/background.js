@@ -25,39 +25,74 @@ chrome.contextMenus.onClicked.addListener((info, tab)=>{
   }
 });
 
+
+var openCount = 0;
+chrome.runtime.onConnect.addListener(function (port) {
+    if (port.name == "devtools-page") {
+      if (openCount == 0) {
+        alert("DevTools window opening.");
+      }
+      openCount++;
+      port.onDisconnect.addListener(function(port) {
+          openCount--;
+          if (openCount == 0) {
+            alert("Last DevTools window closing.");
+          }
+      });
+    }
+});
+
 let connections = {};
 
+// chrome.runtime.onConnect.addListener(function(devToolsConnection) {
+//   // assign the listener function to a variable so we can remove it later
+//   var devToolsListener = function(message, sender, sendResponse) {
+//       // Inject a content script into the identified tab
+//       console.log(message.tabId);
+//       chrome.tabs.executeScript(message.tabId,
+//           { file: message.scriptToInject });
+//   }
+//   // add the listener
+//   devToolsConnection.onMessage.addListener(devToolsListener);
+
+//   devToolsConnection.onDisconnect.addListener(function() {
+//       devToolsConnection.onMessage.removeListener(devToolsListener);
+//   });
+// });
+
 // Background page -- background.js
+
 chrome.runtime.onConnect.addListener(function(devToolsConnection) {
   // assign the listener function to a variable so we can remove it later
-  var devToolsListener = function(message, sender, sendResponse) {
+  console.log(devToolsConnection);
+  if(devToolsConnection.name == 'devtools-page'){
+    var devToolsListener = function(message, sender, sendResponse) {
       // Inject a content script into the identified tab
-      console.log(message.tabId);
-      connections[message.tabId] = devToolsConnection;
-      console.log(message.scriptToInject);
-      chrome.scripting.executeScript(
-          // message.tabId,
-          // { file: message.scriptToInject }
-          {
-            tabId: message.tabId ,
-            files : [message.scriptToInject],
-          }
-          ).then(() => console.log("script injected"));
-      console.log(message.tabId);
-  }
-  // add the listener
-  devToolsConnection.onMessage.addListener(devToolsListener);
+        connections[message.tabId] = devToolsConnection;
+        console.log(message.tabId);
+        chrome.scripting.executeScript(
+            // message.tabId,
+            // { files: message.scriptToInject }
+        {
+              target: {tabId:message.tabId},
+              files : [message.scriptToInject]
+        }).then(() => console.log("script injected"));
+    }
+    // add the listener
+    devToolsConnection.onMessage.addListener(devToolsListener);
 
-  devToolsConnection.onDisconnect.addListener(function() {
-       //devToolsConnection.onMessage.removeListener(devToolsListener);
-       var tabs = Object.keys(connections);
-        for (var i=0, len=tabs.length; i < len; i++) {
-          if (connections[tabs[i]] == devToolsConnection) {
-            delete connections[tabs[i]]
-            break;
+    devToolsConnection.onDisconnect.addListener(function() {
+        devToolsConnection.onMessage.removeListener(devToolsListener);
+        var tabs = Object.keys(connections);
+          for (var i=0, len=tabs.length; i < len; i++) {
+            if (connections[tabs[i]] == devToolsConnection) {
+              delete connections[tabs[i]]
+              break;
+            }
           }
-        }
-  });
+    });
+
+  }
 });
 
 
@@ -79,3 +114,4 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     return true;
 });
 
+  

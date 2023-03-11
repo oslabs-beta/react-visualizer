@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable spaced-comment */
 /* eslint-disable prefer-arrow-callback */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -13,6 +14,8 @@ import './App.css';
 
 function App(): JSX.Element {
   const [message, setMessage] = useState<Message>('');
+  let treeData1:object = {};
+
 
   const updateMessageHandler = (): void => {
     fetch('/api')
@@ -33,16 +36,18 @@ function App(): JSX.Element {
 
   //listening to content script connection
   chrome.runtime.onConnect.addListener(function(port) {
-    //console.assert(port.name === "knockknock");
+    console.assert(port.name === "knockknock");
     port.onMessage.addListener(function(msg) {
-      console.log(msg.joke);
-      console.log(msg.answer);
-      if (msg.joke === "Knock knock")
-        port.postMessage({question: "Who's there?"});
-      else if (msg.answer === "Madame")
-        port.postMessage({question: "Madame who?"});
-      else if (msg.answer === "Madame... Bovary")
+      if (msg.joke === "Knock knock"){
+        console.log(msg.joke);
+        console.log(msg.answer);
+        port.postMessage({question: "Who's there?"});}
+      else if (msg.treeData){
+        console.log(JSON.parse(msg.treeData))
+      }
+      else if (msg.answer === "Madame... Bovary"){
         port.postMessage({question: "I don't get it."});
+      }
     });
   });
   
