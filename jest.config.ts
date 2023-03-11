@@ -9,6 +9,7 @@ const jestConfig: JestConfigWithTsJest = {
     '\\.(css|less)$': 'identity-obj-proxy',
     '^node_modules/(.*)$': '<rootDir>/node_modules/$1',
     '^src/(.*)$': '<rootDir>/src/$1',
+    '^types/(.*)$': '<rootDir>/src/types/$1',
   },
   collectCoverageFrom: ['./src/**'],
   coverageThreshold: {
