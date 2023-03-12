@@ -4,3 +4,8 @@ export interface OpaqueHandleInterface extends OpaqueHandle {
   return: Fiber | null;
   tag: number | null;
 }
+
+export interface HTMLElementInterface extends HTMLElement {
+  placeholder?: string;
+  src?: string;
+}
