@@ -6,8 +6,8 @@ const webstore = 'https://developer.chrome.com/docs/webstore';
 
 chrome.runtime.onInstalled.addListener(async () => {
   chrome.contextMenus.create({
-    id: 'cReactContextMenu',
     title: 'C-React',
+    id: 'cReactContextMenu',
     contexts: ['selection'],
   });
 });
@@ -20,157 +20,94 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     chrome.windows.create({
       url: 'panel.html',
     });
-    // chrome.windows.create({
-    //   type: 'panel',
-    //   left: 0,
-    //   top: 0,
-    //   width: 1000,
-    //   height: 1000,
-    //   url: chrome.runtime.getURL('panel.html'),
-    // })
   }
 });
 
+var openCount = 0;
 chrome.runtime.onConnect.addListener(function (port) {
-  let name = 'knockknock';
+  if (port.name == 'devtools-page') {
+    // if (openCount == 0) {
+    //   alert('DevTools window opening.');
+    // }
+    openCount++;
+    port.onDisconnect.addListener(function (port) {
+      openCount--;
+      // if (openCount == 0) {
+      //   alert('Last DevTools window closing.');
+      // }
+    });
+  }
 });
 
-// function injectCode(tabId) {
-//   chrome.scripting.executeScript({
-//     target: { tabId: tabId },
-//     files: ['/injectScript.js'],
-//   });
-// }
+let connections = {};
 
-// // Background page -- background.js
-// chrome.runtime.onConnect.addListener(function (devToolsConnection) {
+// chrome.runtime.onConnect.addListener(function(devToolsConnection) {
 //   // assign the listener function to a variable so we can remove it later
-//   var devToolsListener = function (message, sender, sendResponse) {
-//     // Inject a content script into the identified tab
-//     console.log(message.tabId);
-//     chrome.scripting.executeScript(message.tabId, {
-//       file: message.scriptToInject,
-//     });
-//   };
-//   // add the listener
-//   devToolsConnection.onMessage.addListener(devToolsListener);
-
-//   devToolsConnection.onDisconnect.addListener(function () {
-//     devToolsConnection.onMessage.removeListener(devToolsListener);
-//   });
-// });
-
-// chrome.runtime.onConnect.addListener(function (devToolsConnection) {
-//   // assign the listener function to a variable so we can remove it later
-//   var devToolsListener = function (message, sender, sendResponse) {
-//     // Inject a content script into the identified tab
-//     console.log(message.tabId);
-//     connections[message.tabId] = devToolsConnection;
-//     chrome.scripting
-//       .executeScript({
-//         tabId: message.tabId,
-//         target: { tabId: message.tabId },
-//         files: [message.scriptToInject],
-//       })
-//       .then(() => console.log('script injected'));
-//     console.log(message.tabId);
-//   };
-//   // add the listener
-//   devToolsConnection.onMessage.addListener(devToolsListener);
-
-//   devToolsConnection.onDisconnect.addListener(function () {
-//     //devToolsConnection.onMessage.removeListener(devToolsListener);
-//     var tabs = Object.keys(connections);
-//     for (var i = 0, len = tabs.length; i < len; i++) {
-//       if (connections[tabs[i]] == devToolsConnection) {
-//         delete connections[tabs[i]];
-//         break;
-//       }
-//     }
-//   });
-// });
-
-//
-
-// chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-//   // Messages from content scripts should have sender.tab set
-//   if (sender.tab) {
-//     console.log('this is sender id in background js ' + sender.tab.id);
-//     var tabId = sender.tab.id;
-//     if (tabId in connections) {
-//       connections[tabId].postMessage(request);
-//     } else {
-//       console.log('Tab not found in connection list.');
-//     }
-//   } else {
-//     console.log('sender.tab not defined.');
+//   var devToolsListener = function(message, sender, sendResponse) {
+//       // Inject a content script into the identified tab
+//       console.log(message.tabId);
+//       chrome.tabs.executeScript(message.tabId,
+//           { file: message.scriptToInject });
 //   }
-//   return true;
+//   // add the listener
+//   devToolsConnection.onMessage.addListener(devToolsListener);
+
+//   devToolsConnection.onDisconnect.addListener(function() {
+//       devToolsConnection.onMessage.removeListener(devToolsListener);
+//   });
 // });
 
-// chrome.browserAction.onClicked.addListener(function () {
-//   chrome.tabs.query(
-//     {
-//       currentWindow: true,
-//       active: true,
-//       // Select active tab of the current window
-//     },
-//     function (tab) {
-//       chrome.tabs.sendMessage(
-//         // Send a message to the content script
-//         tab[0].id,
-//         { line: 'countparas' }
-//       );
-//     }
-//   );
-// });
+// Background page -- background.js
 
-//new 3/11/23
-let id = null;
-const connections = {};
+chrome.runtime.onConnect.addListener(function (devToolsConnection) {
+  // assign the listener function to a variable so we can remove it later
+  console.log(devToolsConnection);
+  if (devToolsConnection.name == 'devtools-page') {
+    var devToolsListener = function (message, sender, sendResponse) {
+      // Inject a content script into the identified tab
+      connections[message.tabId] = devToolsConnection;
+      console.log(message.tabId);
+      chrome.scripting
+        .executeScript(
+          // message.tabId,
+          // { files: message.scriptToInject }
+          {
+            target: { tabId: message.tabId },
+            files: [message.scriptToInject],
+          }
+        )
+        .then(() => console.log('script injected'));
+    };
+    // add the listener
+    devToolsConnection.onMessage.addListener(devToolsListener);
 
-chrome.runtime.onConnect.addListener((devToolsConnection) => {
-  // Assign the listener function to a variable so we can remove it later
-  let devToolsListener = (message, sender, sendResponse) => {
-    if (message.name == 'init') {
-      id = message.tabId;
-      connections[id] = devToolsConnection;
-      // Send a message back to DevTools
-      console.log('one line above connections[id].postMessage("Connected!")');
-      connections[id].postMessage('Connected!');
-    }
-  };
-
-  // Listen to messages sent from the DevTools page
-  devToolsConnection.onMessage.addListener(devToolsListener);
-
-  devToolsConnection.onDisconnect.addListener(() => {
-    devToolsConnection.onMessage.removeListener(devToolsListener);
-  });
+    devToolsConnection.onDisconnect.addListener(function () {
+      devToolsConnection.onMessage.removeListener(devToolsListener);
+      var tabs = Object.keys(connections);
+      for (var i = 0, len = tabs.length; i < len; i++) {
+        if (connections[tabs[i]] == devToolsConnection) {
+          delete connections[tabs[i]];
+          break;
+        }
+      }
+    });
+  }
 });
 
-// var source = new EventSource('http://localhost:3001/stream');
-// source.addEventListener(
-//   'open',
-//   function (e) {
-//     // send the information to the panel
-//     connections[id].postMessage({
-//       name: 'init',
-//       tabId: id,
-//     });
-//     console.log('Connection to the server established');
-//   },
-//   false
-// );
-
-// source.onmessage = function (e) {
-//   console.log('Received message from server: ', e.data);
-//   // send the information to the panel
-//   connections[id].postMessage({
-//     name: 'init',
-//     tabId: id,
-//   });
-
-//   chrome.runtime.sendMessage({ data: e.data, log: e.log });
-//   // document.getElementById("content").innerHTML += e.data + "<br/>";
-// };
+// Receive message from content script and relay to the devTools page for the
+// current tab
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  // Messages from content scripts should have sender.tab set
+  if (sender.tab) {
+    console.log(sender.tab.id);
+    var tabId = sender.tab.id;
+    if (tabId in connections) {
+      connections[tabId].postMessage(request);
+    } else {
+      console.log('Tab not found in connection list.');
+    }
+  } else {
+    console.log('sender.tab not defined.');
+  }
+  return true;
+});

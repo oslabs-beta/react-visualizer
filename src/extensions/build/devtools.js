@@ -27,21 +27,13 @@ var backgroundPageConnection = chrome.runtime.connect({
   name: 'devtools-page',
 });
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.data) {
-    console.log('Received message from background.js', message.data);
-  }
-  sendResponse({
-    name: 'hi',
-  });
+//inject the content script
+backgroundPageConnection.postMessage({
+  tabId: chrome.devtools.inspectedWindow.tabId,
+  scriptToInject: 'public/content.bundle.js',
 });
 
 backgroundPageConnection.onMessage.addListener(function (message) {
   // Handle responses from the background page, if any
-  console.log('this is from devtools' + message);
-});
-
-backgroundPageConnection.postMessage({
-  tabId: chrome.devtools.inspectedWindow.tabId,
-  scriptToInject: 'public/content.bundle.js',
+  console.log(message);
 });

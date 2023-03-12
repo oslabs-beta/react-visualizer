@@ -21,12 +21,12 @@
     },
     "web_accessible_resources": [
         {
-          "resources": ["../../client/components/App.tsx", "public/background.bundle.js", "./contentScript.js", "./injectScript.js"],
+          "resources": ["../../client/components/App.tsx", "panel.html", "public/background.bundle.js", "./contentScript.js", "./injectScript.js"],
           "matches": ["<all_urls>"]
         }
     ],
     "permissions": [
-        "activeTab", "scripting", "contextMenus", "tabs"
+        "activeTab", "scripting", "contextMenus", "tabs", "storage"
     ],
     "host_permissions": ["<all_urls>"]
 }

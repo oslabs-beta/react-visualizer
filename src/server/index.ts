@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import path from 'path';
 
 const app = express();
-const PORT = 3000;
+const PORT = 4000;
 
 app.use(express.static('build/public'));
 
