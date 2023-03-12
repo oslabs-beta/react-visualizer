@@ -13,7 +13,7 @@ const hasSuspense = (
       return true;
     }
 
-    fiber = fiber.return as OpaqueHandleInterface;
+    fiber = fiber.return as unknown as OpaqueHandleInterface;
     traversalCount += 1;
   }
 
