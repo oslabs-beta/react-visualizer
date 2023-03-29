@@ -10,19 +10,6 @@ const createDOMElements = (
   const { className, id, style, onClick, onChange, placeholder } = props;
   const element: HTMLElementInterface = document.createElement(type);
 
-  if (id === 'app') {
-    const header = document.createElement('h1');
-    const container = document.createElement('div');
-    header.innerText = 'Rendered by C-React';
-    header.style.color = '#0077B6';
-    header.style.font = 'bold 25px impact,serif';
-    container.style.backgroundColor = '#E9C46A';
-    container.style.border = 'solid black';
-    container.style.marginBottom = '20px';
-    container.appendChild(header);
-    element.prepend(container);
-  }
-
   element.className = className || '';
 
   if (id) {
