@@ -1,9 +1,9 @@
-import { Fiber, OpaqueHandle } from 'react-reconciler';
+import { OpaqueHandle } from 'react-reconciler';
 
 export interface OpaqueHandleInterface extends OpaqueHandle {
-  return: Fiber | null;
+  return: OpaqueHandleInterface | null;
   tag: number | null;
-  lane: number | null;
+  lanes: number | null;
 }
 
 export interface HTMLElementInterface extends HTMLElement {
