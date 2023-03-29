@@ -1,16 +1,14 @@
 import { HTMLElementInterface, OpaqueHandleInterface } from 'interfaces';
 import { RenderElementsProps, Type } from 'types';
 import hasSuspense from './hasSuspense';
-// import hasTransition from './hasTransition';
 
-const renderElements = (
+const createDOMElements = (
   type: Type,
   props: RenderElementsProps,
   internalInstanceHandle: OpaqueHandleInterface
 ): HTMLElementInterface => {
-  const element: HTMLElementInterface = document.createElement(type);
-
   const { className, id, style, onClick, onChange, placeholder } = props;
+  const element: HTMLElementInterface = document.createElement(type);
 
   if (id === 'app') {
     const header = document.createElement('h1');
@@ -27,12 +25,8 @@ const renderElements = (
 
   element.className = className || '';
 
-  if (style) {
-    Object.keys(style).forEach((key) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore: 7015
-      element.style[key] = style[key];
-    });
+  if (id) {
+    element.id = id;
   }
 
   if (onClick) {
@@ -42,16 +36,20 @@ const renderElements = (
     element.addEventListener('input', onChange);
   }
 
-  if (id) element.id = id;
-  if (placeholder) element.placeholder = placeholder;
+  if (placeholder) {
+    element.placeholder = placeholder;
+  }
 
-  if (props.src) element.src = props.src;
+  if (props.src) {
+    element.src = props.src;
+  }
 
-  if (type === 'button') {
-    element.style.borderColor = 'red';
-    element.style.width = '160px';
-    element.style.height = '100px';
-    element.style.fontSize = 'xx-large';
+  if (style) {
+    Object.keys(style).forEach((key) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore: 7015
+      element.style[key] = style[key];
+    });
   }
 
   if (hasSuspense(internalInstanceHandle)) {
@@ -63,13 +61,7 @@ const renderElements = (
     element.appendChild(tooltip);
   }
 
-  // const laneNum = getLaneNum(internalInstanceHandle);
-  // if (hasTransition(laneNum)) {
-  //   element.style.backgroundColor = setTransitionColor(laneNum);
-  //   element.classList.add(`TransitionLane${laneNum - 6}`);
-  // }
-
   return element;
 };
 
-export default renderElements;
+export default createDOMElements;
