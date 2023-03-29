@@ -1,5 +1,9 @@
-import { HTMLElementInterface, OpaqueHandleInterface } from 'interfaces';
-import { RenderElementsProps, Type } from 'types';
+import {
+  HTMLElementInterface,
+  OpaqueHandleInterface,
+  RenderElementsProps,
+} from 'interfaces';
+import { Type } from 'types';
 import hasSuspense from './hasSuspense';
 
 const createDOMElements = (
