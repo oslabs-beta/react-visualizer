@@ -1,15 +1,11 @@
 {
-  "name": "react-visualizer",
+  "name": "c-react",
   "version": "1.0.0",
   "type": "module",
-  "description": "FFSS PTRI 9",
-  "main": "index.js",
+  "description": "NPM Package",
+  "main": "src/index.ts",
   "scripts": {
-    "dev": "concurrently --kill-others \"npm run server\" \"npm run client\"",
-    "server": "nodemon --watch src/server/**/*.ts --exec ts-node src/server/index.ts",
-    "client": "webpack serve --config webpack.config.js",
     "build": "webpack --config webpack.config.js",
-    "start": "ts-node src/server/index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest --detectOpenHandles",
@@ -20,8 +16,8 @@
     "type": "git",
     "url": "git+https://github.com/oslabs-beta/react-visualizer.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Chen Shen, Martin Carmona, Pengbo Liu, Michelle Lee, Matthew MacDonald",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/oslabs-beta/react-visualizer/issues"
   },
