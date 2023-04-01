@@ -16,13 +16,6 @@ import Tree from 'react-d3-tree';
 // })
 // );
 
-// port.postMessage({ joke: 'Knock knock' });
-// port.onMessage.addListener(function (msg) {
-//   if (msg.question === "Who's there?") port.postMessage({ answer: 'Madame' });
-//   else if (msg.question === 'Madame who?')
-//     port.postMessage({ answer: 'Madame... Bovary' });
-// });
-
 const dummyData = {
   name: 'root',
   children: [
@@ -135,10 +128,8 @@ type DOMMessageResponse = {
   title: string;
   headlines: string[];
 };
-let loggingTree;
 function App(): JSX.Element {
   //beg of example
-
   const [nodes, setNodes] = useState({});
 
   //listening to content script connection
@@ -152,16 +143,17 @@ function App(): JSX.Element {
           port.postMessage({ question: "Who's there?" });
         } else if (msg.treeData) {
           setNodes(JSON.parse(msg.treeData));
-          console.log(nodes);
         } else if (msg.answer === 'Madame... Bovary') {
           port.postMessage({ question: "I don't get it." });
         }
       });
     });
-  });
-  console.log('logging tree global in app');
-  console.log(nodes);
-  // const blah = { name: 'App' };
+    chrome.runtime.onMessage.addListener((request) => {
+      setNodes(request.nestedObject);
+      // Update the D3.js tree in App.tsx with the updated nested object
+    });
+  }, []);
+
   const straightPathFunc = (linkDatum, orientation) => {
     const { source, target } = linkDatum;
     return (orientation = 'vertical');

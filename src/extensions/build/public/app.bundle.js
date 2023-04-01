@@ -37614,12 +37614,6 @@ __webpack_require__.r(__webpack_exports__);
 //   // you can use the variable or set to any state variable from here
 // })
 // );
-// port.postMessage({ joke: 'Knock knock' });
-// port.onMessage.addListener(function (msg) {
-//   if (msg.question === "Who's there?") port.postMessage({ answer: 'Madame' });
-//   else if (msg.question === 'Madame who?')
-//     port.postMessage({ answer: 'Madame... Bovary' });
-// });
 const dummyData = {
     name: 'root',
     children: [
@@ -37687,7 +37681,6 @@ const dummyData = {
         },
     ],
 };
-let loggingTree;
 function App() {
     //beg of example
     const [nodes, setNodes] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
@@ -37703,17 +37696,17 @@ function App() {
                 }
                 else if (msg.treeData) {
                     setNodes(JSON.parse(msg.treeData));
-                    console.log(nodes);
                 }
                 else if (msg.answer === 'Madame... Bovary') {
                     port.postMessage({ question: "I don't get it." });
                 }
             });
         });
-    });
-    console.log('logging tree global in app');
-    console.log(nodes);
-    // const blah = { name: 'App' };
+        chrome.runtime.onMessage.addListener((request) => {
+            setNodes(request.nestedObject);
+            // Update the D3.js tree in App.tsx with the updated nested object
+        });
+    }, []);
     const straightPathFunc = (linkDatum, orientation) => {
         const { source, target } = linkDatum;
         return (orientation = 'vertical');
