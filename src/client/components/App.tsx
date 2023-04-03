@@ -152,7 +152,7 @@ function App(): JSX.Element {
       setNodes(request.nestedObject);
       // Update the D3.js tree in App.tsx with the updated nested object
     });
-  }, []);
+  }, [nodes]);
 
   const straightPathFunc = (linkDatum, orientation) => {
     const { source, target } = linkDatum;

@@ -24,126 +24,6 @@ __webpack_require__.r(__webpack_exports__);
 /* eslint-disable */
 // @ts-nocheck
 
-// console.log(document.querySelector(':root'));
-// console.log(document.documentElement);
-// console.log(document.getElementsByTagName('html'));
-
-// const treeFilter = {
-//   acceptNode(node) {
-//     return;
-//     node.tagName == 'META' ||
-//     node.tagName == 'SCRIPT' ||
-//     node.tagName == 'LINK' ||
-//     node.tagName == 'STYLE' ||
-//     node.parentNode.tagName == 'svg'
-//       ? NodeFilter.FILTER_REJECT
-//       : NodeFilter.FILTER_ACCEPT;
-//   },
-// };
-
-// const walkerFilter = {
-//   acceptNode(node) {
-//     return node.nodeName.toLowerCase() !== 'script'
-//       ? NodeFilter.FILTER_ACCEPT
-//       : NodeFilter.FILTER_REJECT;
-//   },
-// };
-
-// // // let walker = document.createTreeWalker(
-// // //   root,
-// // //   NodeFilter.SHOW_ELEMENT,
-// // //   walkerFilter
-// // // );
-
-// let nodeObj = {};
-
-// const grabTree = new MutationObserver(() => {
-//   nodeObj = {};
-//   nodeObj = grabTreeFromBrowser();
-//   chrome.runtime.sendMessage({ nestedObject: nodeObj });
-// });
-
-// const grabTreeFromBrowser = () => {
-//   const root = document.body;
-//   // const root = document.querySelector(':root');
-//   // const root = document.getElementById(':root');
-
-//   const tree = document.createTreeWalker(
-//     root,
-//     NodeFilter.SHOW_ELEMENT,
-//     walkerFilter,
-//     false
-//   );
-//   //create tree walker
-//   const node = tree.currentNode;
-//   const levels = [];
-//   //BFS
-//   //add nodes to build tree
-//   const queue = [{ domNode: node, context: nodeObj, level: 1 }];
-//   while (queue.length > 0) {
-//     //context aka pointer to layer of object
-//     const { domNode, context, level } = queue.shift();
-//     console.log(level);
-//     // context.innerHTML = domNode.innerHTML;
-//     // if current level is greater than levels.length, push node in level. otherwise, create a new level in zero-indexed treeLevels arr
-//     if (level > levels.length) {
-//       levels.push(['']);
-//     } else {
-//       levels[level - 1].push('');
-//     }
-//     // const height = level;
-//     // const width = levels[level - 1].length;
-//     if (!context.attributes) context.attributes = {};
-//     if (!context.name) context.name = '';
-//     if (domNode.nodeName) context.name = domNode.nodeName;
-//     if (
-//       domNode.nodeName === '#text' &&
-//       domNode.textContent !== null &&
-//       domNode.textContent !== undefined
-//     ) {
-//       context.attributes.content = domNode.textContent;
-//     }
-//     //check if current node has children
-//     if (domNode.childNodes !== null && domNode.childNodes.length > 0) {
-//       for (let i = 0; i < domNode.childNodes.length; i++) {
-//         context.children
-//           ? context.children.push({})
-//           : (context.children = [{}]);
-//         queue.push({
-//           domNode: domNode.childNodes[i],
-//           context: context.children[i],
-//           level: level + 1,
-//         });
-//       }
-//     }
-//   }
-//   console.log(nodeObj);
-//   return nodeObj;
-// };
-
-// const observerConfig = {
-//   attributes: true,
-//   childList: true,
-//   subtree: true,
-// };
-
-// grabTree.observe(document.documentElement, observerConfig);
-// grabTreeFromBrowser();
-
-// const treeData4 = JSON.stringify(nodeObj);
-
-// const port = chrome.runtime.connect({ name: 'knockknock' });
-// port.postMessage({ joke: 'Knock knock' });
-// console.log(port.name);
-// port.onMessage.addListener(function (msg) {
-//   console.log(msg);
-//   if (msg.question === "Who's there?")
-//     port.postMessage({ treeData: treeData4 });
-//   else if (msg.question === 'Madame who?')
-//     port.postMessage({ answer: 'Madame... Bovary' });
-// });
-
-//Pengbo's new code
 /**
  * @param {DOM node}
  * @return {treeWalker}
@@ -200,7 +80,7 @@ function getChildren(walker) {
       D3Node.children = getChildren(childWalker);
     //add the newly created D3Node to the children array
     d3Children.push(D3Node);
-    //walker move to the next sibling and reassign the childNode to the sibiling node
+    //walker move to the next sibling and reassign the childNode to the sibling node
     childNode = walker.nextSibling();
   }
 
@@ -225,35 +105,31 @@ function createD3Node(walker) {
  * @param {treeWalker} walker
  * @returns {} the root node of d3 Tree
  */
-function traverse(walker) {
-  let d3Node = createD3Node(walker);
+function grabData() {
+  const root = document.body;
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_ELEMENT,
+    walkerFilter
+  );
+  const d3Node = createD3Node(walker);
   if (walker.currentNode.children.length > 0)
     d3Node.children = getChildren(walker);
   return d3Node;
 }
 
 // const root = document.getElementById(':root');
-// const root = document.querySelector(':root');
-const root = document.body;
 
-let walker = document.createTreeWalker(
-  root,
-  NodeFilter.SHOW_ELEMENT,
-  walkerFilter
-);
-
-let d3Tree = traverse(walker);
+let d3Tree = grabData();
 const treeData4 = JSON.stringify(d3Tree);
 
 console.log('D3 tree is converted:', d3Tree);
 
-//added this michelle
 const grabTree = new MutationObserver(() => {
-  d3Tree = {};
-  d3Tree = traverse(walker);
-  chrome.runtime.sendMessage({ nestedObject: d3Tree });
-  return d3Tree;
+  let updatedTree = grabData();
+  chrome.runtime.sendMessage({ nestedObject: updatedTree });
 });
+
 const observerConfig = {
   attributes: true,
   childList: true,
@@ -261,13 +137,12 @@ const observerConfig = {
 };
 
 grabTree.observe(document.documentElement, observerConfig);
-// //michelle added this michelle
 
 const port = chrome.runtime.connect({ name: 'knockknock' });
 port.postMessage({ joke: 'Knock knock' });
 console.log(port.name);
 port.onMessage.addListener(function (msg) {
-  console.log(msg);
+  console.log('msg in content.js', msg);
   if (msg.question === "Who's there?")
     port.postMessage({ treeData: treeData4 });
   else if (msg.question === 'Madame who?')
