@@ -131,6 +131,8 @@ type DOMMessageResponse = {
 function App(): JSX.Element {
   //beg of example
   const [nodes, setNodes] = useState({});
+  //instantiate to store web-vital stats passed from contentScript.js
+  const [coreVitals, setCoreVitals] = useState({});
 
   //listening to content script connection
   useEffect(() => {
@@ -149,8 +151,15 @@ function App(): JSX.Element {
       });
     });
     chrome.runtime.onMessage.addListener((request) => {
-      setNodes(request.nestedObject);
-      // Update the D3.js tree in App.tsx with the updated nested object
+      if (request.nestedObject) {
+        console.log()
+        setNodes(request.nestedObject);
+      }
+      if (request.storedVitals) {
+        console.log('setting webvital in app.tsx', request.storedVitals);
+        setCoreVitals(request.storedVitals);
+      }
+      //Update the D3.js tree in App.tsx with the updated nested object
     });
   }, [nodes]);
 
@@ -161,8 +170,21 @@ function App(): JSX.Element {
     // : `M${source.x},${source.y}L${target.x},${target.y}`;
   };
   const nodeSize = { x: 150, y: 50 };
+
+  
   return (
     <div className="App">
+      <div id="webVitals">
+        <div class="coreVitals">
+          <li>Cumulative Layout Shift (CLS): {coreVitals.cls} {coreVitals.clsRating}</li>
+          <li>First Input Delay (FID): {coreVitals.fid} {coreVitals.fidRating}  </li>
+          <li>Largest Contentful Paint (LCP): {coreVitals.lcp} {coreVitals.lcpRating} </li>
+        </div>
+        <div class="otherVitals">
+          <li>First Contentful Paint (FCP): {coreVitals.fcp} {coreVitals.fcpRating}</li>
+          <li>Time to First Byte (TTFB): {coreVitals.ttfb} {coreVitals.ttfbRating}</li>
+        </div>
+      </div>
       <div id="treeWrapper" style={{ width: '100em', height: '100em' }}>
         <Tree
           data={nodes}

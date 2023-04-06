@@ -1,6 +1,51 @@
 /* eslint-disable */
 // @ts-nocheck
 
+/***
+ * we are assuming webvitals package is installed from npm
+ * To not use npm install:
+ * <script type="module">
+ *   import {onCLS, onFID, onLCP} from 'https://unpkg.com/web-vitals@3?module';
+ * </script>
+ */  
+import {onCLS, onFID, onLCP, onFCP, onTTFB, measure} from 'web-vitals';
+//user device info
+import { getDeviceInfo } from 'web-vitals-reporter'
+console.log(getDeviceInfo())
+
+let coreWebVitals = {};
+function storeVitals(){
+  //user need to interact with the page for FID to be reported
+  onFID((metric) => {
+    coreWebVitals.fid = Math.round(metric.value*10000)/10000;
+    coreWebVitals.fidRating = metric.rating.toUpperCase();
+  });
+
+  //following metrics will not be reported if page was loaded in the background
+  onLCP((metric) => {
+    coreWebVitals.lcp = Math.round(metric.value*10000)/10000;
+    coreWebVitals.lcpRating = metric.rating.toUpperCase();
+  });
+  //CLS
+  onCLS((metric) => {
+    coreWebVitals.cls = Math.round(metric.value*10000)/10000;
+    coreWebVitals.clsRating = metric.rating.toUpperCase();
+  });
+  //FCP
+  onFCP((metric) => {
+    coreWebVitals.fcp = Math.round(metric.value*10000)/10000;
+    coreWebVitals.fcpRating = metric.rating.toUpperCase();
+  });
+  //TTFB
+  onTTFB((metric) => {
+    coreWebVitals.ttfb = Math.round(metric.value*10000)/10000;
+    coreWebVitals.ttfbRating = metric.rating.toUpperCase();
+  });
+  return coreWebVitals;
+}
+//storeVitals();
+
+
 /**
  * @param {DOM node}
  * @return {treeWalker}
@@ -96,7 +141,6 @@ function grabData() {
 }
 
 // const root = document.getElementById(':root');
-
 let d3Tree = grabData();
 const treeData4 = JSON.stringify(d3Tree);
 
@@ -104,8 +148,11 @@ console.log('D3 tree is converted:', d3Tree);
 
 const grabTree = new MutationObserver(() => {
   let updatedTree = grabData();
-  chrome.runtime.sendMessage({ nestedObject: updatedTree });
+  chrome.runtime.sendMessage({ nestedObject: updatedTree});
+  let updatedVitals = storeVitals();
+  chrome.runtime.sendMessage({storedVitals: updatedVitals})
 });
+
 
 const observerConfig = {
   attributes: true,
@@ -115,13 +162,14 @@ const observerConfig = {
 
 grabTree.observe(document.documentElement, observerConfig);
 
+
 const port = chrome.runtime.connect({ name: 'knockknock' });
 port.postMessage({ joke: 'Knock knock' });
 console.log(port.name);
 port.onMessage.addListener(function (msg) {
   console.log('msg in content.js', msg);
   if (msg.question === "Who's there?")
-    port.postMessage({ treeData: treeData4 });
+    port.postMessage({ treeData: treeData4});
   else if (msg.question === 'Madame who?')
     port.postMessage({ answer: 'Madame... Bovary' });
 });
