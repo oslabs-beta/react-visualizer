@@ -37684,6 +37684,8 @@ const dummyData = {
 function App() {
     //beg of example
     const [nodes, setNodes] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
+    //instantiate to store web-vital stats passed from contentScript.js
+    const [coreVitals, setCoreVitals] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
     //listening to content script connection
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
         chrome.runtime.onConnect.addListener(function (port) {
@@ -37703,8 +37705,15 @@ function App() {
             });
         });
         chrome.runtime.onMessage.addListener((request) => {
-            setNodes(request.nestedObject);
-            // Update the D3.js tree in App.tsx with the updated nested object
+            if (request.nestedObject) {
+                console.log();
+                setNodes(request.nestedObject);
+            }
+            if (request.storedVitals) {
+                console.log('setting webvital in app.tsx', request.storedVitals);
+                setCoreVitals(request.storedVitals);
+            }
+            //Update the D3.js tree in App.tsx with the updated nested object
         });
     }, [nodes]);
     const straightPathFunc = (linkDatum, orientation) => {
@@ -37715,6 +37724,36 @@ function App() {
     };
     const nodeSize = { x: 150, y: 50 };
     return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "App" },
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "webVitals" },
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { class: "coreVitals" },
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null,
+                    "Cumulative Layout Shift (CLS): ",
+                    coreVitals.cls,
+                    " ",
+                    coreVitals.clsRating),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null,
+                    "First Input Delay (FID): ",
+                    coreVitals.fid,
+                    " ",
+                    coreVitals.fidRating,
+                    "  "),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null,
+                    "Largest Contentful Paint (LCP): ",
+                    coreVitals.lcp,
+                    " ",
+                    coreVitals.lcpRating,
+                    " ")),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { class: "otherVitals" },
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null,
+                    "First Contentful Paint (FCP): ",
+                    coreVitals.fcp,
+                    " ",
+                    coreVitals.fcpRating),
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null,
+                    "Time to First Byte (TTFB): ",
+                    coreVitals.ttfb,
+                    " ",
+                    coreVitals.ttfbRating))),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "treeWrapper", style: { width: '100em', height: '100em' } },
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_d3_tree__WEBPACK_IMPORTED_MODULE_2__["default"], { data: nodes, nodeSize: nodeSize, 
                 // orientation="vertical"
