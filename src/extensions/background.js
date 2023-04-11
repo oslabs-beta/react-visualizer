@@ -4,6 +4,7 @@
 const extensions = 'https://developer.chrome.com/docs/extensions';
 const webstore = 'https://developer.chrome.com/docs/webstore';
 
+//creating a context menu 
 chrome.runtime.onInstalled.addListener(async () => {
   chrome.contextMenus.create({
     title: 'C-React',
@@ -12,80 +13,58 @@ chrome.runtime.onInstalled.addListener(async () => {
   });
 });
 
+//opening up a new window when the cReact is selected
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  console.log('item clicked');
-  console.log(info.menuItemId);
   if (info.menuItemId == 'cReactContextMenu') {
-    console.log('onclikc working');
     chrome.windows.create({
       url: 'panel.html',
     });
   }
 });
 
+//
 var openCount = 0;
 chrome.runtime.onConnect.addListener(function (port) {
   if (port.name == 'devtools-page') {
-    // if (openCount == 0) {
-    //   alert('DevTools window opening.');
-    // }
     openCount++;
     port.onDisconnect.addListener(function (port) {
       openCount--;
-      // if (openCount == 0) {
-      //   alert('Last DevTools window closing.');
-      // }
     });
   }
 });
 
+
 let connections = {};
-
-// chrome.runtime.onConnect.addListener(function(devToolsConnection) {
-//   // assign the listener function to a variable so we can remove it later
-//   var devToolsListener = function(message, sender, sendResponse) {
-//       // Inject a content script into the identified tab
-//       console.log(message.tabId);
-//       chrome.tabs.executeScript(message.tabId,
-//           { file: message.scriptToInject });
-//   }
-//   // add the listener
-//   devToolsConnection.onMessage.addListener(devToolsListener);
-
-//   devToolsConnection.onDisconnect.addListener(function() {
-//       devToolsConnection.onMessage.removeListener(devToolsListener);
-//   });
-// });
-
-// Background page -- background.js
-
 chrome.runtime.onConnect.addListener(function (devToolsConnection) {
   // assign the listener function to a variable so we can remove it later
-  console.log(devToolsConnection);
   if (devToolsConnection.name == 'devtools-page') {
     var devToolsListener = function (message, sender, sendResponse) {
       // Inject a content script into the identified tab
       connections[message.tabId] = devToolsConnection;
-      console.log(message.tabId);
+      //expecting tabId and file:scriptToInject
+      console.log(connections[message.tabId]);
       chrome.scripting
         .executeScript(
-          // message.tabId,
-          // { files: message.scriptToInject }
           {
+            //target tab
             target: { tabId: message.tabId },
+            //inject the content script to above tab
             files: [message.scriptToInject],
           }
         )
         .then(() => console.log('script injected'));
     };
-    // add the listener
+
+    // add the listener to the one time message - postMessage
     devToolsConnection.onMessage.addListener(devToolsListener);
 
+    // when we are disconnected, we remove the listener
     devToolsConnection.onDisconnect.addListener(function () {
       devToolsConnection.onMessage.removeListener(devToolsListener);
       var tabs = Object.keys(connections);
       for (var i = 0, len = tabs.length; i < len; i++) {
         if (connections[tabs[i]] == devToolsConnection) {
+          //delete the connection tab
           delete connections[tabs[i]];
           break;
         }
@@ -94,8 +73,7 @@ chrome.runtime.onConnect.addListener(function (devToolsConnection) {
   }
 });
 
-// Receive message from content script and relay to the devTools page for the
-// current tab
+// Message listener for content script
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   // Messages from content scripts should have sender.tab set
   if (sender.tab) {
