@@ -6,12 +6,15 @@ export default {
   mode: 'development',
   entry: './src/index.ts',
   output: {
-    path: path.resolve(__dirname, 'build', 'public'),
+    path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
     publicPath: '/',
+    library: 'Creact Visualizer',
+    libraryTarget: 'umd',
+    globalObject: 'this',
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    extensions: ['.ts', '.js'],
   },
   module: {
     rules: [

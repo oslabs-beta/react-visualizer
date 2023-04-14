@@ -1,3 +1,3 @@
 import cRender from './lib/crender';
 
-export { cRender };
+export default cRender;

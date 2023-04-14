@@ -5,6 +5,7 @@
 // @ts-nocheck
 
 import { HostConfig } from 'react-reconciler';
+import { DefaultEventPriority } from 'react-reconciler/constants';
 import createDOMElements from './createDOMElements';
 
 const getHostConfig: HostConfig = () => ({

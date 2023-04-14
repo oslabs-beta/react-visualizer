@@ -1,5 +1,5 @@
-import { FiberTags } from 'enums';
-import { OpaqueHandleInterface } from 'interfaces';
+import { FiberTags } from '../types/enums';
+import { OpaqueHandleInterface } from '../types/interfaces';
 
 const hasSuspense = (
   internalInstanceHandle: OpaqueHandleInterface

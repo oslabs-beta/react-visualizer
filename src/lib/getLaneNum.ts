@@ -1,4 +1,4 @@
-import { OpaqueHandleInterface } from 'interfaces';
+import { OpaqueHandleInterface } from '../types/interfaces';
 
 const getLaneNum = (internalInstanceHandle: OpaqueHandleInterface): number => {
   let count = 0;

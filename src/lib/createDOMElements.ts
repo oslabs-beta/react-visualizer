@@ -2,9 +2,12 @@ import {
   HTMLElementInterface,
   OpaqueHandleInterface,
   RenderElementsProps,
-} from 'interfaces';
-import { Type } from 'types';
+} from '../types/interfaces';
+import { Type } from '../types/types';
+import getLaneNum from './getLaneNum';
 import hasSuspense from './hasSuspense';
+import hasTransition from './hasTransition';
+import setTransitionColor from './setTransitionColor';
 
 const createDOMElements = (
   type: Type,
@@ -50,6 +53,13 @@ const createDOMElements = (
     tooltip.innerHTML = '&#128570 Phew! It took me 1223ms to load!';
     tooltip.className = 'SuspensePopup';
     element.appendChild(tooltip);
+  }
+
+  const laneNum = getLaneNum(internalInstanceHandle);
+
+  if (hasTransition(laneNum)) {
+    element.style.backgroundColor = setTransitionColor(laneNum);
+    element.classList.add(`TransitionLane${laneNum - 6}`);
   }
 
   return element;
