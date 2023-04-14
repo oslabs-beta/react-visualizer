@@ -37615,34 +37615,38 @@ function App() {
     //instantiate to store web-vital stats passed from contentScript.js
     const [coreVitals, setCoreVitals] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
     //new 4.11
-    //new
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        currentTab = tabs[0].id;
-        console.log('logging tab from app.tsx ' + currentTab);
-    });
     //listening to background.js connection
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+        //new
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            currentTab = tabs[0].id;
+            console.log('logging tab from app.tsx ' + currentTab);
+            chrome.storage.local.get(['key']).then((result) => {
+                console.log('Value currently is ');
+                console.log(result.key[currentTab]);
+                setNodes(result.key[currentTab]);
+            });
+        });
         // chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         //   currentTab = tabs[0].id;
         console.log('logging tab from app.tsx' + currentTab);
         chrome.runtime.onMessage.addListener((request) => {
-            // if (request.nestedObject) {
-            //   setNodes(request.nestedObject);
-            if (request.fromBGtree1) {
-                console.log('lets log ' + request.fromBGtree1);
-                setNodes(JSON.parse(request.fromBGtree1[currentTab]));
-                // setNodes(JSON.parse(request.fromBGtree1.currentTab));
+            //   // if (request.nestedObject) {
+            //   //   setNodes(request.nestedObject);
+            //   if (request.fromBGtree1) {
+            //     console.log('lets log ' + request.fromBGtree1);
+            //     setNodes(JSON.parse(request.fromBGtree1[currentTab]));
+            //     // setNodes(JSON.parse(request.fromBGtree1.currentTab));
+            //   }
+            //   if (request.fromBGtree2) {
+            //     setNodes(request.fromBGtree2[currentTab]);
+            //   }
+            if (request.storedVitalsfromBG) {
+                setCoreVitals(request.storedVitalsfromBG);
             }
-            if (request.fromBGtree2) {
-                setNodes(request.fromBGtree2[currentTab]);
-                // setNodes(request.fromBGtree2.currentTab);
-            }
-            if (request.storedVitals) {
-                setCoreVitals(request.storedVitals);
-            }
-            //Update the D3.js tree in App.tsx with the updated nested object
+            //   //Update the D3.js tree in App.tsx with the updated nested object
         });
-    }, [currentTab]);
+    }, [currentTab, nodes]);
     // //new 4.11
     // chrome.tabs.onActivated.addListener(function (activeInfo) {
     //   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
