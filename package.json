@@ -1,11 +1,11 @@
 {
-  "name": "c-react",
-  "version": "1.0.0",
-  "type": "module",
+  "name": "creact-visualizer",
+  "version": "1.0.2",
   "description": "NPM Package",
-  "main": "src/index.ts",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
+    "build": "tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest --detectOpenHandles",
@@ -67,5 +67,8 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
-  }
+  },
+  "files": [
+    "build/**/*"
+  ]
 }

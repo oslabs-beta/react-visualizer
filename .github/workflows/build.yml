@@ -19,7 +19,7 @@ jobs:
         run: npm run build
       - name: Check build status
         run: |
-          if [ -f "build/public/bundle.js" ]; then
+          if [ -f "build/src/index.js" ]; then
             echo "Build succeeded!"
           else
             echo "Build failed!"

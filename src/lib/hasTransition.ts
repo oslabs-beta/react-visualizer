@@ -1,4 +1,4 @@
-import { FiberLanes } from 'enums';
+import { FiberLanes } from '../types/enums';
 
 const hasTransition = (laneNum: number): boolean =>
   laneNum >= FiberLanes.TransitionHydrationLane &&

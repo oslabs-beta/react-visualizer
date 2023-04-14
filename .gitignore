@@ -104,7 +104,7 @@ dist
 .tern-port
 
 # Webpack
-build/public/bundle.js
+build
 
 # macOS files
 .DS_Store

@@ -17,6 +17,7 @@ const jestConfig: JestConfigWithTsJest = {
       lines: 0,
     },
   },
+  testPathIgnorePatterns: ['build'],
 };
 
 export default jestConfig;

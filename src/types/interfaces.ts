@@ -1,5 +1,5 @@
 import { OpaqueHandle } from 'react-reconciler';
-import { Props } from 'types';
+import { Props } from './types';
 
 export interface OpaqueHandleInterface extends OpaqueHandle {
   return: OpaqueHandleInterface | null;
