@@ -159,8 +159,8 @@ function grabData() {
 
 // const root = document.getElementById(':root');
 let d3Tree = grabData();
-const treeData4 = JSON.stringify(d3Tree);
-chrome.runtime.sendMessage({ tree: treeData4 });
+// const treeData4 = JSON.stringify(d3Tree);
+chrome.runtime.sendMessage({ tree: d3Tree });
 
 const grabTree = new MutationObserver(() => {
   let updatedTree = grabData();

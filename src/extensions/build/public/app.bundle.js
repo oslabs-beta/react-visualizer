@@ -37605,59 +37605,69 @@ __webpack_require__.r(__webpack_exports__);
 // @ts-nocheck
 /* eslint-disable  @typescript-eslint/no-unused-vars */
 
+// import { Tabs, Storage } from 'chrome';
 
 // import treeNodes from '../../extensions/contentScript.js';
 
 function App() {
-    //beg of example
+    let currentTab;
     const [nodes, setNodes] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
-    let currentTab = '';
-    //instantiate to store web-vital stats passed from contentScript.js
+    // instantiate to store web-vital stats passed from contentScript.js
     const [coreVitals, setCoreVitals] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
-    //new 4.11
-    //listening to background.js connection
+    // beg of example
+    // let currentTab;
+    // instantiate to store web-vital stats passed from contentScript.js
+    // new 4.11
+    // chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    //   currentTab = tabs[0].id;
+    //   console.log(`logging tab from app.tsx ${currentTab}`);
+    //   // chrome.storage.local.get(['key']).then((result) => {
+    //   //   if (currentTab !== undefined) {
+    //   //     setNodes(result.key[currentTab]);
+    //   //     console.log('this is nodes ' + result.key[currentTab]);
+    //   //   }
+    //   // });
+    // });
+    // listening to background.js connection
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-        //new
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             currentTab = tabs[0].id;
-            console.log('logging tab from app.tsx ' + currentTab);
-            chrome.storage.local.get(['key']).then((result) => {
-                console.log('Value currently is ');
-                console.log(result.key[currentTab]);
-                setNodes(result.key[currentTab]);
+            console.log(`logging tab from app.tsx ${currentTab}`);
+            chrome.runtime.onMessage.addListener((request) => {
+                if (request.fromBGtree1) {
+                    console.log('lets log ' + request.fromBGtree1);
+                    // treeObj[currentTab] = request.fromBGtree1[currentTab];
+                    setNodes(request.fromBGtree1.currentTab);
+                    // }
+                }
+                // if (request.fromBGtree1) {
+                //   console.log('lets log ' + request.fromBGtree1);
+                //   setNodes(request.fromBGtree1[currentTab]);
+                //   // setNodes(request.fromBGtree1.currentTab);
+                //   // }
+                // }
+                // if (request.fromBGtree2) {
+                //   setNodes(request.fromBGtree2[currentTab]);
+                // }
+                if (request.storedVitalsfromBG) {
+                    setCoreVitals(request.storedVitalsfromBG);
+                }
+            });
+            //listen for changes in chrome storage
+            chrome.storage.onChanged.addListener((changes, namespace) => {
+                for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+                    if (currentTab !== undefined) {
+                        console.log(changes.key.newValue[currentTab]);
+                        changes.key.newValue[currentTab];
+                        // let newTree = {};
+                        // newTree[currentTab] = changes.key.newValue[currentTab];
+                        //Update the D3.js tree in App.tsx with the updated nested object
+                        setNodes(changes.key.newValue[currentTab]);
+                    }
+                }
             });
         });
-        // chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        //   currentTab = tabs[0].id;
-        console.log('logging tab from app.tsx' + currentTab);
-        chrome.runtime.onMessage.addListener((request) => {
-            //   // if (request.nestedObject) {
-            //   //   setNodes(request.nestedObject);
-            //   if (request.fromBGtree1) {
-            //     console.log('lets log ' + request.fromBGtree1);
-            //     setNodes(JSON.parse(request.fromBGtree1[currentTab]));
-            //     // setNodes(JSON.parse(request.fromBGtree1.currentTab));
-            //   }
-            //   if (request.fromBGtree2) {
-            //     setNodes(request.fromBGtree2[currentTab]);
-            //   }
-            if (request.storedVitalsfromBG) {
-                setCoreVitals(request.storedVitalsfromBG);
-            }
-            //   //Update the D3.js tree in App.tsx with the updated nested object
-        });
-    }, [currentTab, nodes]);
-    // //new 4.11
-    // chrome.tabs.onActivated.addListener(function (activeInfo) {
-    //   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    //     currentTab = tabs[0].id;
-    //     console.log('logging tab from app.tsx' + tabs[0].id);
-    //     if (tabs[0].id === activeTabId) {
-    //       chrome.tabs.sendMessage(activeTabId, { type: 'reload' });
-    //     }
-    //   });
-    // });
-    // //new
+    }, [nodes]);
     const straightPathFunc = (linkDatum, orientation) => {
         const { source, target } = linkDatum;
         return (orientation = 'vertical');
@@ -37667,7 +37677,7 @@ function App() {
     const nodeSize = { x: 150, y: 50 };
     return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "App" },
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "webVitals" },
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { class: "coreVitals" },
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "coreVitals" },
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null,
                     "Cumulative Layout Shift (CLS): ",
                     coreVitals.cls,
@@ -37685,7 +37695,7 @@ function App() {
                     ' ',
                     coreVitals.lcpRating,
                     ' ')),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { class: "otherVitals" },
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "otherVitals" },
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null,
                     "First Contentful Paint (FCP): ",
                     coreVitals.fcp,

@@ -1,82 +1,90 @@
 /* eslint-disable */
 // @ts-nocheck
 /* eslint-disable  @typescript-eslint/no-unused-vars */
-
-import React, { useState, useEffect } from 'react';
-import { Message } from 'types';
+import React, { useState, useEffect, useRef } from 'react';
+// import { Tabs, Storage } from 'chrome';
 import './App.css';
+
 // import treeNodes from '../../extensions/contentScript.js';
 
 import Tree from 'react-d3-tree';
 
-// , (result) => {
-//   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-//   console.log(`User is ${result.treeData}`);
-//   // you can use the variable or set to any state variable from here
-// })
-// );
-
-type DOMMessage = {
-  type: 'GET_DOM';
+type CoreVitals = {
+  cls?: number;
+  fid?: number;
+  lcp?: number;
+  fcp?: number;
+  ttfb?: number;
+  clsRating?: string;
+  fidRating?: string;
+  lcpRating?: string;
+  fcpRating?: string;
+  ttfbRating?: string;
 };
 
-type DOMMessageResponse = {
-  title: string;
-  headlines: string[];
-};
 function App(): JSX.Element {
-  //beg of example
+  let currentTab;
   const [nodes, setNodes] = useState({});
-  let currentTab = '';
-  //instantiate to store web-vital stats passed from contentScript.js
-  const [coreVitals, setCoreVitals] = useState({});
-  //new 4.11
+  // instantiate to store web-vital stats passed from contentScript.js
+  const [coreVitals, setCoreVitals] = useState<CoreVitals>({});
 
-  //listening to background.js connection
+  // beg of example
+  // let currentTab;
+  // instantiate to store web-vital stats passed from contentScript.js
+  // new 4.11
+  // chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  //   currentTab = tabs[0].id;
+  //   console.log(`logging tab from app.tsx ${currentTab}`);
+  //   // chrome.storage.local.get(['key']).then((result) => {
+  //   //   if (currentTab !== undefined) {
+  //   //     setNodes(result.key[currentTab]);
+  //   //     console.log('this is nodes ' + result.key[currentTab]);
+  //   //   }
+  //   // });
+  // });
+
+  // listening to background.js connection
   useEffect(() => {
-    //new
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       currentTab = tabs[0].id;
-      console.log('logging tab from app.tsx ' + currentTab);
-      chrome.storage.local.get(['key']).then((result) => {
-        console.log('Value currently is ');
-        console.log(result.key[currentTab]);
-        setNodes(result.key[currentTab]);
+      console.log(`logging tab from app.tsx ${currentTab}`);
+      chrome.runtime.onMessage.addListener((request) => {
+        if (request.fromBGtree1) {
+          console.log('lets log ' + request.fromBGtree1);
+          // treeObj[currentTab] = request.fromBGtree1[currentTab];
+          setNodes(request.fromBGtree1.currentTab);
+          // }
+        }
+        // if (request.fromBGtree1) {
+        //   console.log('lets log ' + request.fromBGtree1);
+        //   setNodes(request.fromBGtree1[currentTab]);
+        //   // setNodes(request.fromBGtree1.currentTab);
+        //   // }
+        // }
+        // if (request.fromBGtree2) {
+        //   setNodes(request.fromBGtree2[currentTab]);
+        // }
+        if (request.storedVitalsfromBG) {
+          setCoreVitals(request.storedVitalsfromBG);
+        }
+      });
+      //listen for changes in chrome storage
+      chrome.storage.onChanged.addListener((changes, namespace) => {
+        for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+          if (currentTab !== undefined) {
+            console.log(changes.key.newValue[currentTab]);
+            changes.key.newValue[currentTab];
+            // let newTree = {};
+            // newTree[currentTab] = changes.key.newValue[currentTab];
+            //Update the D3.js tree in App.tsx with the updated nested object
+            setNodes(changes.key.newValue[currentTab]);
+          }
+        }
       });
     });
-    // chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    //   currentTab = tabs[0].id;
-    console.log('logging tab from app.tsx' + currentTab);
-    chrome.runtime.onMessage.addListener((request) => {
-      //   // if (request.nestedObject) {
-      //   //   setNodes(request.nestedObject);
-      //   if (request.fromBGtree1) {
-      //     console.log('lets log ' + request.fromBGtree1);
-      //     setNodes(JSON.parse(request.fromBGtree1[currentTab]));
-      //     // setNodes(JSON.parse(request.fromBGtree1.currentTab));
-      //   }
-      //   if (request.fromBGtree2) {
-      //     setNodes(request.fromBGtree2[currentTab]);
-      //   }
-      if (request.storedVitalsfromBG) {
-        setCoreVitals(request.storedVitalsfromBG);
-      }
-      //   //Update the D3.js tree in App.tsx with the updated nested object
-    });
-  }, [currentTab, nodes]);
+  }, [nodes]);
 
-  // //new 4.11
-  // chrome.tabs.onActivated.addListener(function (activeInfo) {
-  //   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-  //     currentTab = tabs[0].id;
-  //     console.log('logging tab from app.tsx' + tabs[0].id);
-  //     if (tabs[0].id === activeTabId) {
-  //       chrome.tabs.sendMessage(activeTabId, { type: 'reload' });
-  //     }
-  //   });
-  // });
-  // //new
-  const straightPathFunc = (linkDatum, orientation) => {
+  const straightPathFunc = (linkDatum: object, orientation: string) => {
     const { source, target } = linkDatum;
     return (orientation = 'vertical');
     // ? `M${source.y},${source.x}L${target.y},${target.x}`
@@ -87,7 +95,7 @@ function App(): JSX.Element {
   return (
     <div className="App">
       <div id="webVitals">
-        <div class="coreVitals">
+        <div className="coreVitals">
           <li>
             Cumulative Layout Shift (CLS): {coreVitals.cls}{' '}
             {coreVitals.clsRating}
@@ -100,7 +108,7 @@ function App(): JSX.Element {
             {coreVitals.lcpRating}{' '}
           </li>
         </div>
-        <div class="otherVitals">
+        <div className="otherVitals">
           <li>
             First Contentful Paint (FCP): {coreVitals.fcp}{' '}
             {coreVitals.fcpRating}
