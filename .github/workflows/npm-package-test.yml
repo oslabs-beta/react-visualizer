@@ -1,4 +1,4 @@
-name: Test workflow for npm package
+name: Test
 
 on: [pull_request]
 

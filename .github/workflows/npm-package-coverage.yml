@@ -1,4 +1,4 @@
-name: Coverage workflow for npm package
+name: Coverage
 
 on: [pull_request]
 

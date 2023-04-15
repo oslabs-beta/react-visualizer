@@ -1,4 +1,4 @@
-name: ESLint workflow for npm package
+name: ESLint
 
 on: [pull_request]
 
