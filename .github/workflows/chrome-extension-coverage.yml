@@ -1,10 +1,10 @@
-name: Coverage
+name: Chrome Extension
 
 on: [pull_request]
 
 jobs:
   chrome-extension-coverage:
-    name: chrome-extension
+    name: coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

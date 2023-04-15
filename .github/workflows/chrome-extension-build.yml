@@ -1,10 +1,10 @@
-name: Build
+name: Chrome Extension
 
 on: [pull_request]
 
 jobs:
   chrome-extension-build:
-    name: chrome-extension
+    name: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -21,7 +21,7 @@ jobs:
         working-directory: chrome-extension
       - name: Check build status
         run: |
-          if [ -f "chrome-extension/build/public.app.bundle.js" ]; then
+          if [ -f "chrome-extension/build/public/app.bundle.js" ]; then
             echo "Build succeeded!"
           else
             echo "Build failed!"

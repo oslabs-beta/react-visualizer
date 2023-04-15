@@ -1,10 +1,10 @@
-name: Test
+name: Chrome Extension
 
 on: [pull_request]
 
 jobs:
   chrome-extension-test:
-    name: chrome-extension
+    name: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

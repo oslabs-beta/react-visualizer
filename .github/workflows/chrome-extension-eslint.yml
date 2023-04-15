@@ -1,10 +1,10 @@
-name: ESLint
+name: Chrome Extension
 
 on: [pull_request]
 
 jobs:
   chrome-extension-eslint:
-    name: chrome-extension
+    name: eslint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

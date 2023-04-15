@@ -1,10 +1,10 @@
-name: Coverage
+name: NPM Package
 
 on: [pull_request]
 
 jobs:
   npm-package-coverage:
-    name: npm-package
+    name: coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
