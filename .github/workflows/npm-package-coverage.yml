@@ -3,8 +3,8 @@ name: Coverage
 on: [pull_request]
 
 jobs:
-  coverage:
-    name: Coverage
+  npm-package-coverage:
+    name: npm-package
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,12 +15,14 @@ jobs:
           node-version: '16.x'
       - name: Install dependencies
         run: npm ci
+        working-directory: npm-package
       - name: Run Coverage
         run: npm run coverage
+        working-directory: npm-package
       - name: Fail if coverage threshold not met
         run: |
           threshold_not_met='Jest: "global" coverage threshold for lines \(([0-9]+)%\) not met:'
-          output="$(npm run coverage)"
+          output="$(cd npm-package && npm run coverage)"
           if [[ $output =~ $threshold_not_met ]]; then
             echo "Coverage threshold not met"
             exit 1

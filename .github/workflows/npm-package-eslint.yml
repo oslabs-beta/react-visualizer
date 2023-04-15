@@ -3,8 +3,8 @@ name: ESLint
 on: [pull_request]
 
 jobs:
-  eslint:
-    name: ESLint
+  npm-package-eslint:
+    name: npm-package
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,8 +15,10 @@ jobs:
           node-version: '16.x'
       - name: Install dependencies
         run: npm ci
+        working-directory: npm-package
       - name: Run ESLint
         run: npm run lint -- --max-warnings 0
+        working-directory: npm-package
       - name: Fail on lint errors
         run: |
           if [ -n "$(git status --porcelain | grep -v '^??')" ]; then

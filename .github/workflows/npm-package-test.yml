@@ -3,8 +3,8 @@ name: Test
 on: [pull_request]
 
 jobs:
-  test:
-    name: Test
+  npm-package-test:
+    name: npm-package
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,8 +15,10 @@ jobs:
           node-version: '16.x'
       - name: Install dependencies
         run: npm ci
+        working-directory: npm-package
       - name: Run Tests
         run: npm run test
+        working-directory: npm-package
       - name: Fail on test errors
         if: ${{ failure() }}
         run: exit 1;

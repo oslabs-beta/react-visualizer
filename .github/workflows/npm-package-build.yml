@@ -3,8 +3,8 @@ name: Build
 on: [pull_request]
 
 jobs:
-  build:
-    name: Build
+  npm-package-build:
+    name: npm-package
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,11 +15,13 @@ jobs:
           node-version: '16.x'
       - name: Install dependencies
         run: npm ci
+        working-directory: npm-package
       - name: Build
         run: npm run build
+        working-directory: npm-package
       - name: Check build status
         run: |
-          if [ -f "build/src/index.js" ]; then
+          if [ -f "npm-package/build/src/index.js" ]; then
             echo "Build succeeded!"
           else
             echo "Build failed!"
