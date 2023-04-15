@@ -1,0 +1,7 @@
+/build
+/node_modules
+/coverage
+/src/extensions
+
+webpack.config.js
+jest.config.ts

@@ -1,9 +1,9 @@
-name: NPM Package
+name: Chrome Extension
 
 on: [pull_request]
 
 jobs:
-  npm-package-eslint:
+  chrome-extension-eslint:
     name: eslint
     runs-on: ubuntu-latest
     steps:
@@ -15,10 +15,10 @@ jobs:
           node-version: '16.x'
       - name: Install dependencies
         run: npm ci
-        working-directory: npm-package
+        working-directory: chrome-extension
       - name: Run ESLint
         run: npm run lint -- --max-warnings 0
-        working-directory: npm-package
+        working-directory: chrome-extension
       - name: Fail on lint errors
         run: |
           if [ -n "$(git status --porcelain | grep -v '^??')" ]; then

@@ -1,9 +1,9 @@
-name: NPM Package
+name: Chrome Extension
 
 on: [pull_request]
 
 jobs:
-  npm-package-build:
+  chrome-extension-build:
     name: build
     runs-on: ubuntu-latest
     steps:
@@ -15,13 +15,13 @@ jobs:
           node-version: '16.x'
       - name: Install dependencies
         run: npm ci
-        working-directory: npm-package
+        working-directory: chrome-extension
       - name: Build
         run: npm run build
-        working-directory: npm-package
+        working-directory: chrome-extension
       - name: Check build status
         run: |
-          if [ -f "npm-package/build/src/index.js" ]; then
+          if [ -f "chrome-extension/build/public/app.bundle.js" ]; then
             echo "Build succeeded!"
           else
             echo "Build failed!"

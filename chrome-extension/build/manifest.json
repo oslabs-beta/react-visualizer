@@ -1,0 +1,32 @@
+{
+    "manifest_version": 3,
+    "name": "C-React",
+    "version": "1.0",
+    "devtools_page": "devtools.html",
+    "description": "Chrome Extension to visualize React concurrent rendering",
+    "background": {
+      "service_worker": "public/background.bundle.js"
+    },
+    "content_scripts":[
+        {
+          "matches": ["<all_urls>", "http://localhost/*"],
+          "run_at": "document_idle",
+          "js": ["public/content.bundle.js"]
+        }
+    ],
+    "icons":{
+       "16": "assets/logo_16.png",
+       "48": "assets/logo_48.png",
+       "128": "assets/logo_128.png"
+    },
+    "web_accessible_resources": [
+        {
+          "resources": ["../../client/components/App.tsx", "panel.html", "public/background.bundle.js", "./contentScript.js", "./injectScript.js"],
+          "matches": ["<all_urls>"]
+        }
+    ],
+    "permissions": [
+        "activeTab", "scripting", "contextMenus", "tabs", "storage"
+    ],
+    "host_permissions": ["<all_urls>"]
+}
