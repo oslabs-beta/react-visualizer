@@ -3,8 +3,8 @@ name: Test
 on: [pull_request]
 
 jobs:
-  npm-package-test:
-    name: npm-package
+  chrome-extension-test:
+    name: chrome-extension
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,10 +15,12 @@ jobs:
           node-version: '16.x'
       - name: Install dependencies
         run: npm ci
-        working-directory: npm-package
+        working-directory: chrome-extension
       - name: Run Tests
         run: npm run test
-        working-directory: npm-package
+        working-directory: chrome-extension
       - name: Fail on test errors
         if: ${{ failure() }}
         run: exit 1;
+
+path: .github/workflows/chrome-extension/test.yml

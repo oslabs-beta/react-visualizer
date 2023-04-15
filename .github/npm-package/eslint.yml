@@ -1,0 +1,30 @@
+name: ESLint
+
+on: [pull_request]
+
+jobs:
+  npm-package-eslint:
+    name: npm-package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+      - name: Install dependencies
+        run: npm ci
+        working-directory: npm-package
+      - name: Run ESLint
+        run: npm run lint -- --max-warnings 0
+        working-directory: npm-package
+      - name: Fail on lint errors
+        run: |
+          if [ -n "$(git status --porcelain | grep -v '^??')" ]; then
+            echo "ESLint found errors, please fix them and try again."
+            git status
+            exit 1
+          fi
+
+path: .github/workflows/npm-package/eslint.yml

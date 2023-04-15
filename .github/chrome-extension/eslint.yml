@@ -3,8 +3,8 @@ name: ESLint
 on: [pull_request]
 
 jobs:
-  npm-package-eslint:
-    name: npm-package
+  chrome-extension-eslint:
+    name: chrome-extension
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,10 +15,10 @@ jobs:
           node-version: '16.x'
       - name: Install dependencies
         run: npm ci
-        working-directory: npm-package
+        working-directory: chrome-extension
       - name: Run ESLint
         run: npm run lint -- --max-warnings 0
-        working-directory: npm-package
+        working-directory: chrome-extension
       - name: Fail on lint errors
         run: |
           if [ -n "$(git status --porcelain | grep -v '^??')" ]; then
@@ -26,3 +26,5 @@ jobs:
             git status
             exit 1
           fi
+
+path: .github/workflows/chrome-extension/eslint.yml
