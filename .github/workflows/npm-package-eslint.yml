@@ -1,10 +1,10 @@
-name: ESLint
+name: ESLint workflow for npm package
 
 on: [pull_request]
 
 jobs:
-  eslint:
-    name: ESLint
+  npm-package-eslint:
+    name: npm-package
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

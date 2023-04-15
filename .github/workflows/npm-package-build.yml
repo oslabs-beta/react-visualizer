@@ -1,10 +1,10 @@
-name: Build
+name: Build workflow for npm package
 
 on: [pull_request]
 
 jobs:
-  build:
-    name: Build
+  npm-package-build:
+    name: npm-package
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -21,7 +21,7 @@ jobs:
         working-directory: npm-package
       - name: Check build status
         run: |
-          if [ -f "build/src/index.js" ]; then
+          if [ -f "npm-package/build/src/index.js" ]; then
             echo "Build succeeded!"
           else
             echo "Build failed!"

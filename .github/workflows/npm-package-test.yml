@@ -1,10 +1,10 @@
-name: Test
+name: Test workflow for npm package
 
 on: [pull_request]
 
 jobs:
-  test:
-    name: Test
+  npm-package-test:
+    name: npm-package
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
