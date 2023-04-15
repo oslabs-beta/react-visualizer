@@ -15,8 +15,10 @@ jobs:
           node-version: '16.x'
       - name: Install dependencies
         run: npm ci
+        working-directory: npm-package
       - name: Run Coverage
         run: npm run coverage
+        working-directory: npm-package
       - name: Fail if coverage threshold not met
         run: |
           threshold_not_met='Jest: "global" coverage threshold for lines \(([0-9]+)%\) not met:'

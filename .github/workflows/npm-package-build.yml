@@ -15,8 +15,10 @@ jobs:
           node-version: '16.x'
       - name: Install dependencies
         run: npm ci
+        working-directory: npm-package
       - name: Build
         run: npm run build
+        working-directory: npm-package
       - name: Check build status
         run: |
           if [ -f "build/src/index.js" ]; then
