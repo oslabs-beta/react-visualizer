@@ -22,5 +22,3 @@ jobs:
       - name: Fail on test errors
         if: ${{ failure() }}
         run: exit 1;
-
-path: .github/workflows/chrome-extension/test.yml

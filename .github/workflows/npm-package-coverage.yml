@@ -1,9 +1,9 @@
-name: Build
+name: Coverage
 
 on: [pull_request]
 
 jobs:
-  npm-package-build:
+  npm-package-coverage:
     name: npm-package
     runs-on: ubuntu-latest
     steps:
@@ -16,16 +16,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
         working-directory: npm-package
-      - name: Build
-        run: npm run build
+      - name: Run Coverage
+        run: npm run coverage
         working-directory: npm-package
-      - name: Check build status
+      - name: Fail if coverage threshold not met
         run: |
-          if [ -f "npm-package/build/src/index.js" ]; then
-            echo "Build succeeded!"
-          else
-            echo "Build failed!"
+          threshold_not_met='Jest: "global" coverage threshold for lines \(([0-9]+)%\) not met:'
+          output="$(cd npm-package && npm run coverage)"
+          if [[ $output =~ $threshold_not_met ]]; then
+            echo "Coverage threshold not met"
             exit 1
           fi
-
-path: .github/workflows/npm-package/build.yml

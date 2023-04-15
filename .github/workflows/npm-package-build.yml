@@ -3,8 +3,8 @@ name: Build
 on: [pull_request]
 
 jobs:
-  chrome-extension-build:
-    name: chrome-extension
+  npm-package-build:
+    name: npm-package
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,17 +15,15 @@ jobs:
           node-version: '16.x'
       - name: Install dependencies
         run: npm ci
-        working-directory: chrome-extension
+        working-directory: npm-package
       - name: Build
         run: npm run build
-        working-directory: chrome-extension
+        working-directory: npm-package
       - name: Check build status
         run: |
-          if [ -f "chrome-extension/build/public.app.bundle.js" ]; then
+          if [ -f "npm-package/build/src/index.js" ]; then
             echo "Build succeeded!"
           else
             echo "Build failed!"
             exit 1
           fi
-
-path: .github/workflows/chrome-extension/build.yml
