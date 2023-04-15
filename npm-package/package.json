@@ -1,0 +1,74 @@
+{
+  "name": "creact-visualizer",
+  "version": "1.0.2",
+  "description": "NPM Package",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "jest --detectOpenHandles",
+    "coverage": "jest --detectOpenHandles --collect-coverage",
+    "check": "npm run build && npm run lint && npm run coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oslabs-beta/react-visualizer.git#subdirectory=npm-package"
+  },
+  "author": "Chen Shen, Martin Carmona, Pengbo Liu, Michelle Lee, Matthew MacDonald",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oslabs-beta/react-visualizer/issues"
+  },
+  "homepage": "https://github.com/oslabs-beta/react-visualizer#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-reconciler": "^0.29.0"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.4.3",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.13.0",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@types/react-reconciler": "^0.28.2",
+    "@types/supertest": "^2.0.12",
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
+    "cheerio": "^1.0.0-rc.12",
+    "concurrently": "^7.6.0",
+    "css-loader": "^6.7.3",
+    "eslint": "^8.34.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^29.4.3",
+    "jest-environment-jsdom": "^29.4.3",
+    "msw": "^1.0.1",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.8.4",
+    "style-loader": "^3.3.1",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.0.5",
+    "ts-loader": "^9.4.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1"
+  },
+  "files": [
+    "build/**/*"
+  ]
+}
