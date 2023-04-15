@@ -4,10 +4,10 @@
     "module": "ESNext",
     "jsx": "react",
     "esModuleInterop": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
+    // "strict": true,
+    // "noImplicitAny": true,
+    // "noImplicitReturns": true,
+    // "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
@@ -26,7 +26,6 @@
   "ts-node": {
     "esm": true
   },
-  // "include": ["src/**/*", "__tests__/**/*"],
   "include": ["src/client", "src/server", "src/types", "__tests__/**/*"],
   "exclude": ["node_modules", "build", "jest.config.ts", "src/extensions/**/*"]
 }

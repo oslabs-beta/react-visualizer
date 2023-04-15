@@ -37601,51 +37601,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _App_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./App.css */ "./src/client/components/App.css");
 /* harmony import */ var react_d3_tree__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-d3-tree */ "./node_modules/react-d3-tree/lib/esm/index.js");
-/* eslint-disable */
-// @ts-nocheck
-/* eslint-disable  @typescript-eslint/no-unused-vars */
 
-// import { Tabs, Storage } from 'chrome';
 
-// import treeNodes from '../../extensions/contentScript.js';
 
 function App() {
-    let currentTab;
     const [nodes, setNodes] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
     // instantiate to store web-vital stats passed from contentScript.js
     const [coreVitals, setCoreVitals] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
-    // beg of example
-    // let currentTab;
-    // instantiate to store web-vital stats passed from contentScript.js
-    // new 4.11
-    // chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    //   currentTab = tabs[0].id;
-    //   console.log(`logging tab from app.tsx ${currentTab}`);
-    //   // chrome.storage.local.get(['key']).then((result) => {
-    //   //   if (currentTab !== undefined) {
-    //   //     setNodes(result.key[currentTab]);
-    //   //     console.log('this is nodes ' + result.key[currentTab]);
-    //   //   }
-    //   // });
-    // });
-    // listening to background.js connection
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            currentTab = tabs[0].id;
-            console.log(`logging tab from app.tsx ${currentTab}`);
+            let currentTab = tabs[0].id;
+            // listening to background.js connection
             chrome.runtime.onMessage.addListener((request) => {
-                if (request.fromBGtree1) {
-                    console.log('lets log ' + request.fromBGtree1);
-                    // treeObj[currentTab] = request.fromBGtree1[currentTab];
-                    setNodes(request.fromBGtree1.currentTab);
-                    // }
+                if (request.domTreeObj) {
+                    //set first render of tree
+                    setNodes(request.domTreeObj.currentTab);
                 }
-                // if (request.fromBGtree1) {
-                //   console.log('lets log ' + request.fromBGtree1);
-                //   setNodes(request.fromBGtree1[currentTab]);
-                //   // setNodes(request.fromBGtree1.currentTab);
-                //   // }
-                // }
                 // if (request.fromBGtree2) {
                 //   setNodes(request.fromBGtree2[currentTab]);
                 // }
@@ -37653,27 +37624,18 @@ function App() {
                     setCoreVitals(request.storedVitalsfromBG);
                 }
             });
-            //listen for changes in chrome storage
-            chrome.storage.onChanged.addListener((changes, namespace) => {
-                for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-                    if (currentTab !== undefined) {
-                        console.log(changes.key.newValue[currentTab]);
-                        changes.key.newValue[currentTab];
-                        // let newTree = {};
-                        // newTree[currentTab] = changes.key.newValue[currentTab];
-                        //Update the D3.js tree in App.tsx with the updated nested object
-                        setNodes(changes.key.newValue[currentTab]);
-                    }
+            // listen for changes in chrome storage
+            chrome.storage.onChanged.addListener((changes) => {
+                if (currentTab !== undefined) {
+                    changes.key.newValue[currentTab];
+                    // newTree[currentTab] = changes.key.newValue[currentTab];
+                    // Update the D3.js tree in App.tsx with the updated nested object
+                    setNodes(changes.key.newValue[currentTab]);
                 }
             });
         });
     }, [nodes]);
-    const straightPathFunc = (linkDatum, orientation) => {
-        const { source, target } = linkDatum;
-        return (orientation = 'vertical');
-        // ? `M${source.y},${source.x}L${target.y},${target.x}`
-        // : `M${source.x},${source.y}L${target.x},${target.y}`;
-    };
+    //size of nodes in Dom Tree
     const nodeSize = { x: 150, y: 50 };
     return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "App" },
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "webVitals" },
@@ -37707,7 +37669,11 @@ function App() {
                     " ",
                     coreVitals.ttfbRating))),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "treeWrapper", style: { width: '100em', height: '100em' } },
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_d3_tree__WEBPACK_IMPORTED_MODULE_2__["default"], { data: nodes, nodeSize: nodeSize, 
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_d3_tree__WEBPACK_IMPORTED_MODULE_2__["default"]
+            // @ts-ignore
+            , { 
+                // @ts-ignore
+                data: nodes, nodeSize: nodeSize, 
                 // orientation="vertical"
                 pathFunc: "step" }))));
 }

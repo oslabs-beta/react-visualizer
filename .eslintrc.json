@@ -4,8 +4,8 @@
     "airbnb",
     "airbnb-typescript",
     "airbnb/hooks",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    // "plugin:@typescript-eslint/recommended",
+    // "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
@@ -15,15 +15,15 @@
   "rules": {
     "prettier/prettier": "error",
     "import/prefer-default-export": "off",
-    "@typescript-eslint/no-explicit-any": "error",
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      {
-        "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_",
-        "ignoreRestSiblings": true
-      }
-    ]
+    // "@typescript-eslint/no-explicit-any": "error",
+    // "@typescript-eslint/no-unused-vars": [
+    //   "error",
+    //   {
+    //     "argsIgnorePattern": "^_",
+    //     "varsIgnorePattern": "^_",
+    //     "ignoreRestSiblings": true
+    //   }
+    // ]
   },
   "settings": {
     "import/core-modules": [

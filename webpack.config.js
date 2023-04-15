@@ -8,7 +8,6 @@ export default {
     app: './src/client/index.tsx',
     background: './src/extensions/background.js',
     content: './src/extensions/contentScript.js',
-    //backend: './src/server/index.ts',
   },
   output: {
     path: path.resolve(__dirname, 'src/extensions/build/public'),

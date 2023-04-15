@@ -256,9 +256,6 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var web_vitals__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! web-vitals */ "./node_modules/web-vitals/dist/web-vitals.js");
 /* harmony import */ var web_vitals_reporter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! web-vitals-reporter */ "./node_modules/web-vitals-reporter/src/index.js");
-/* eslint-disable */
-// @ts-nocheck
-
 /***
  * we are assuming webvitals package is installed from npm
  * To not use npm install:
@@ -397,27 +394,7 @@ function grabData() {
   return d3Node;
 }
 
-//new 4.11
-// function grabData() {
-//   chrome.runtime.sendMessage({ type: 'getDOM' }, function (response) {
-//     const root = response.dom;
-//     const walker = createWalker(root);
-//     const D3Node = createD3Node(walker);
-//     D3Node.children = getChildren(walker);
-//     // Call a function to display the D3 tree
-//     displayD3Tree(D3Node);
-//   });
-// }
-
-// chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-//   if (request.type === 'reload') {
-//     grabData();
-//   }
-// });
-
-// const root = document.getElementById(':root');
 let d3Tree = grabData();
-// const treeData4 = JSON.stringify(d3Tree);
 chrome.runtime.sendMessage({ tree: d3Tree });
 
 const grabTree = new MutationObserver(() => {
@@ -433,22 +410,6 @@ const observerConfig = {
 };
 grabTree.observe(document.documentElement, observerConfig);
 
-//new
-// grabTree.observe(document.documentElement, observerConfig);
-// let visibilityHandler = () => {
-//   if (document.hidden) {
-//     grabTree.disconnect();
-//   } else {
-//     grabTree.observe(document.documentElement, observerConfig);
-//   }
-// };
-
-// window.addEventListener('beforeunload', function () {
-//   grabTree.disconnect();
-// });
-
-// window.addEventListener('visibilitychange', visibilityHandler);
-//new
 // const port = chrome.runtime.connect({ name: 'knockknock' });
 // port.postMessage({ joke: 'Knock knock' });
 // console.log(port.name);
