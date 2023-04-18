@@ -1,6 +1,6 @@
 {
   "name": "creact-visualizer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "NPM Package",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oslabs-beta/react-visualizer.git#subdirectory=npm-package"
+    "url": "git+https://github.com/oslabs-beta/react-visualizer.git"
   },
   "author": "Chen Shen, Martin Carmona, Pengbo Liu, Michelle Lee, Matthew MacDonald",
   "license": "MIT",
