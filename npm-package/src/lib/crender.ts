@@ -11,6 +11,7 @@ const hostConfig = getHostConfig();
 const reconciler = ReactReconciler(hostConfig);
 
 const cRender = (element, container) => {
+  // eslint-disable-next-line no-console
   console.log('testing');
   const fiberRoot = reconciler.createContainer(container, 1, true, true);
   reconciler.updateContainer(element, fiberRoot, null, null);
