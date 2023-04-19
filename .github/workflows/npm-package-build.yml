@@ -21,7 +21,10 @@ jobs:
         working-directory: npm-package
       - name: Check build status
         run: |
-          if [ -f "npm-package/build/src/index.js" ]; then
+          if test -f "npm-package/build/bundle.d.ts" && \
+             test -f "npm-package/build/bundle.js" && \
+             test -f "npm-package/build/bundle.js.LICENSE.txt" && \
+             test -f "npm-package/build/bundle.js.map"; then
             echo "Build succeeded!"
           else
             echo "Build failed!"
