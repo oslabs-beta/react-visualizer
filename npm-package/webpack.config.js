@@ -1,9 +1,7 @@
-import path from 'path';
+const path = require('path');
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-
-export default {
-  mode: 'development',
+module.exports = {
+  mode: 'production',
   entry: './src/index.ts',
   output: {
     path: path.resolve(__dirname, 'build'),
@@ -16,6 +14,7 @@ export default {
   resolve: {
     extensions: ['.ts', '.js'],
   },
+  devtool: 'source-map',
   module: {
     rules: [
       {
