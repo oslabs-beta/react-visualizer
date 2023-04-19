@@ -28,6 +28,11 @@
     "react-dom": "^18.2.0",
     "react-reconciler": "^0.29.0"
   },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-reconciler": "^0.29.0"
+  },
   "devDependencies": {
     "@jest/globals": "^29.4.3",
     "@testing-library/jest-dom": "^5.16.5",

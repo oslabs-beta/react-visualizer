@@ -13,6 +13,9 @@ module.exports = {
     globalObject: 'this',
   },
   resolve: {
+    alias: {
+      react: path.resolve('./node_modules/react'),
+    },
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
   devtool: 'source-map',
@@ -24,6 +27,26 @@ module.exports = {
         use: 'ts-loader',
       },
     ],
+  },
+  externals: {
+    react: {
+      commonjs: 'react',
+      commonjs2: 'react',
+      amd: 'React',
+      root: 'React',
+    },
+    'react-dom': {
+      commonjs: 'react-dom',
+      commonjs2: 'react-dom',
+      amd: 'ReactDOM',
+      root: 'ReactDOM',
+    },
+    'react-reconciler': {
+      commonjs: 'react-reconciler',
+      commonjs2: 'react-reconciler',
+      amd: 'ReactReconciler',
+      root: 'ReactReconciler',
+    },
   },
   plugins: [
     new CleanWebpackPlugin({
