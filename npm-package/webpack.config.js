@@ -1,4 +1,5 @@
 const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   mode: 'production',
@@ -7,12 +8,12 @@ module.exports = {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
     publicPath: '/',
-    library: 'Creact Visualizer',
+    library: 'CreactVisualizer',
     libraryTarget: 'umd',
     globalObject: 'this',
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
   devtool: 'source-map',
   module: {
@@ -24,4 +25,15 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: [
+        '**/*',
+        '!bundle.js',
+        '!bundle.js.map',
+        '!bundle.js.LICENSE.txt',
+        '!bundle.d.ts',
+      ],
+    }),
+  ],
 };
