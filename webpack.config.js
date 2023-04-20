@@ -4,10 +4,15 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 export default {
   mode: 'development',
-  entry: './src/client/index.tsx',
+  entry: {
+    app: './src/client/index.tsx',
+    background: './src/extensions/background.js',
+    content: './src/extensions/contentScript.js',
+    //backend: './src/server/index.ts',
+  },
   output: {
-    path: path.resolve(__dirname, 'build', 'public'),
-    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'src/extensions/build/public'),
+    filename: '[name].bundle.js',
     publicPath: '/',
   },
   resolve: {
@@ -17,7 +22,7 @@ export default {
     rules: [
       {
         test: /\.(ts|tsx)$/,
-        exclude: /node_modules/,
+        exclude: [/node_modules/],
         use: 'ts-loader',
       },
       {
@@ -30,10 +35,11 @@ export default {
     port: 8080,
     historyApiFallback: true,
     proxy: {
-      '/api': 'http://localhost:3000',
+      '/api': 'http://localhost:4000',
     },
     static: {
       directory: path.join(__dirname, 'build', 'public'),
     },
   },
+  devtool: 'cheap-module-source-map',
 };
