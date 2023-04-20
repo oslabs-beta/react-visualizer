@@ -1,31 +1,51 @@
-# React-Visualizer
+# C-React
 
-## Development mode
+## Custom Renderer & Visualizer for Modern React
 
-To run the app in development mode, open a terminal window and run the following command:
+C-React is an open-source tool that marks and visualizes concurrent rendering patterns on web pages, differentiates between server-side rendered and client-side rendered components, and displays performance metrics.
 
-```
-npm run dev
-```
+### Getting Started
 
-This will start both the server and the client. The server will be running on port 3000, and the client will be running on port 8080. Whenever you make changes to the server or client code, the server and client will automatically reload.
+#### Download NPM Package
 
-## Production build
+1. Install `creact-visualizer` via NPM:
 
-To create a production build of the app, open a terminal window and run the following command:
-
-```
-npm run build
+```sh
+npm install creact-visualizer
 ```
 
-This will create a production build of the app in the build directory. The build will include both the client and server code.
+2. Import `cRender` into your root file:
 
-To run the production build, open a terminal window and navigate to the build directory. Then, run the following command:
-
-```
-npm start
+```js
+import cRender from 'creact-visualizer';
 ```
 
-This will start the server in production mode. The server will be running on port 3000.
+3. Render your root component using the `cRender`:
 
-Note that in production mode, the server will serve the static files from the build/public directory, and not from the src/client directory. Therefore, any changes you make to the client code will not be reflected in the production build until you rebuild the app using npm run build.
+```js
+import React from 'react';
+import App from './App';
+import cRender from 'creact-visualizer';
+
+const root = document.getElementById('root');
+
+cRender(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  root
+);
+```
+
+<br>
+<br>
+
+# C-React Chrome DevTool
+
+## Install C-React DevTool from the Chrome Web Store
+
+1. Open your React application, or any website.
+
+2. Open Chrome Developer Tools and click on the C-React panel.
+
+3. Watch the tree update dynamically as you navigate through your web page.
