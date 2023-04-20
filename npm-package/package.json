@@ -2,10 +2,10 @@
   "name": "creact-visualizer",
   "version": "1.0.6",
   "description": "NPM Package",
-  "main": "build/src/index.js",
-  "types": "build/src/index.d.ts",
+  "main": "build/bundle.js",
+  "types": "build/bundle.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "webpack --config webpack.config.js && tsc --declaration --emitDeclarationOnly --outFile build/bundle.d.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest --detectOpenHandles",
@@ -28,6 +28,11 @@
     "react-dom": "^18.2.0",
     "react-reconciler": "^0.29.0"
   },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-reconciler": "^0.29.0"
+  },
   "devDependencies": {
     "@jest/globals": "^29.4.3",
     "@testing-library/jest-dom": "^5.16.5",
@@ -41,6 +46,7 @@
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
     "cheerio": "^1.0.0-rc.12",
+    "clean-webpack-plugin": "^4.0.0",
     "concurrently": "^7.6.0",
     "css-loader": "^6.7.3",
     "eslint": "^8.34.0",
