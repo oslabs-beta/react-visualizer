@@ -8,6 +8,7 @@ import './App.css';
 // import treeNodes from '../../extensions/contentScript.js';
 
 import Tree from 'react-d3-tree';
+import { node } from 'webpack';
 
 // , (result) => {
 //   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -16,109 +17,51 @@ import Tree from 'react-d3-tree';
 // })
 // );
 
-const dummyData = {
-  name: 'root',
-  children: [
-    {
-      name: 'app',
-      children: [
-        {
-          name: 'div',
-          children: [
-            {
-              name: 'h1',
-            },
-          ],
-        },
-        {
-          name: 'h3',
-        },
-        {
-          name: 'Suspense',
-          children: [
-            {
-              name: 'span',
-            },
-            {
-              name: 'input',
-            },
-            {
-              name: 'ul',
-              children: [
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-                { name: 'li' },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ],
+const nodeColors = {
+  0: '',
+  6: '#99e2b4',
+  7: '#88d4dB',
+  8: '#9ff7cb',
+  9: '#67b99a',
+  10: '#56ab91',
+  11: '#469d89',
+  12: '#358f80',
+  13: '#248277',
+  14: '#14746f',
+  15: '#036666',
+  16: '#40916c',
+  17: '#25a244',
+  18: '#208b3a',
+  19: '#1a7431',
+  20: '#155d27',
+  21: '#10451d',
+  22: '#2d6a4f',
 };
 
-// const dummyData = {
-//   name: 'App',
-//   children: [
-//     {
-//       name: 'Button',
-//       attributes: {
-//         department: 'Production',
-//       },
-//       children: [
-//         {
-//           name: 'Worker',
-//           attributes: {
-//             department: 'button',
-//           },
-//           children: [
-//             {
-//               name: 'MuiStack-root',
-//             },
-//           ],
-//         },
-//         {
-//           name: 'Dummy Data',
-//           attributes: {
-//             department: 'Assembly',
-//           },
-//           children: [
-//             {
-//               name: 'Worker',
-//             },
-//           ],
-//         },
-//       ],
-//     },
-//   ],
-// };
+const renderCustomNodeElement = ({ nodeDatum, toggleNode }) => {
+  
+  return (
+    <g onClick={toggleNode}>
+      <circle r = '15' fill= {nodeColors[nodeDatum.attributes?.lane.toString()]} />
+        <text>{nodeDatum.name}</text>
+        {nodeDatum.attributes?.lane && (
+        <text x="20" dy="10" strokeWidth ="1">
+          Lane: {nodeDatum.attributes.lane}
+        </text>
+        )}
+        {nodeDatum.attributes?.suspense && (
+        <text x="20" dy="10" strokeWidth ="1">
+          Suspense
+        </text>
+        )}
+        {nodeDatum.attributes?.loadtime && (
+        <text text x="20" dy="22" strokeWidth ="1"> 
+          {'Loadingtime: ' + nodeDatum.attributes.loadtime + 'ms'}
+        </text>
+        )}
+    </g>
+  );
+};
 
 type DOMMessage = {
   type: 'GET_DOM';
@@ -170,6 +113,7 @@ function App(): JSX.Element {
           // orientation="vertical"
           pathFunc="step"
           // collapsible="false"
+          renderCustomNodeElement={renderCustomNodeElement}
         />
       </div>
     </div>

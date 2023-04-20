@@ -37614,72 +37614,35 @@ __webpack_require__.r(__webpack_exports__);
 //   // you can use the variable or set to any state variable from here
 // })
 // );
-const dummyData = {
-    name: 'root',
-    children: [
-        {
-            name: 'app',
-            children: [
-                {
-                    name: 'div',
-                    children: [
-                        {
-                            name: 'h1',
-                        },
-                    ],
-                },
-                {
-                    name: 'h3',
-                },
-                {
-                    name: 'Suspense',
-                    children: [
-                        {
-                            name: 'span',
-                        },
-                        {
-                            name: 'input',
-                        },
-                        {
-                            name: 'ul',
-                            children: [
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                                { name: 'li' },
-                            ],
-                        },
-                    ],
-                },
-            ],
-        },
-    ],
+const nodeColors = {
+    0: '',
+    6: '#99e2b4',
+    7: '#88d4dB',
+    8: '#9ff7cb',
+    9: '#67b99a',
+    10: '#56ab91',
+    11: '#469d89',
+    12: '#358f80',
+    13: '#248277',
+    14: '#14746f',
+    15: '#036666',
+    16: '#40916c',
+    17: '#25a244',
+    18: '#208b3a',
+    19: '#1a7431',
+    20: '#155d27',
+    21: '#10451d',
+    22: '#2d6a4f',
+};
+const renderCustomNodeElement = ({ nodeDatum, toggleNode }) => {
+    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("g", { onClick: toggleNode },
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("circle", { r: '15', fill: nodeColors[nodeDatum.attributes?.lane.toString()] }),
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("text", null, nodeDatum.name),
+        nodeDatum.attributes?.lane && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("text", { x: "20", dy: "10", strokeWidth: "1" },
+            "Lane: ",
+            nodeDatum.attributes.lane)),
+        nodeDatum.attributes?.suspense && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("text", { x: "20", dy: "10", strokeWidth: "1" }, "Suspense")),
+        nodeDatum.attributes?.loadtime && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("text", { text: true, x: "20", dy: "22", strokeWidth: "1" }, 'Loadingtime: ' + nodeDatum.attributes.loadtime + 'ms'))));
 };
 function App() {
     //beg of example
@@ -37718,7 +37681,9 @@ function App() {
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "treeWrapper", style: { width: '100em', height: '100em' } },
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_d3_tree__WEBPACK_IMPORTED_MODULE_2__["default"], { data: nodes, nodeSize: nodeSize, 
                 // orientation="vertical"
-                pathFunc: "step" }))));
+                pathFunc: "step", 
+                // collapsible="false"
+                renderCustomNodeElement: renderCustomNodeElement }))));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 

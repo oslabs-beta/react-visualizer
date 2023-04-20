@@ -34,8 +34,24 @@ const walkerFilter = {
  */
 //TODO: decide what attributes to add to d3Node
 
+function getLane (node) {
+  if (node.className.includes('TransitionLane')){
+    const lastTwo = node.className.slice(-2); 
+    const lastOne = node.className.slice(-1); 
+    //console.log("last two: ", lastTwo); 
+    if (!isNaN(lastTwo)) {
+      return Number(lastTwo); 
+    } else if (!isNaN(lastOne)) return Number(lastOne); 
+}
+  return 0; 
+}
 function getAttributes(node) {
-  return { type: node.className || node.nodeName };
+  return { 
+    type: node.className || node.nodeName, 
+    lane: getLane(node), 
+    suspense: node.className.includes('Suspense'),
+    loadtime: node.getAttribute('loadtime')
+  };
 }
 
 /**
