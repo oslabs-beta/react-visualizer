@@ -26,12 +26,12 @@ function App(): JSX.Element {
       let currentTab: number = tabs[0].id;
       // listening to background.js connection
       chrome.runtime.onMessage.addListener((request) => {
-        if (request.domTreeObj) {
-          //set first render of tree
-          setNodes(request.domTreeObj.currentTab);
-        }
-        // if (request.fromBGtree2) {
-        //   setNodes(request.fromBGtree2[currentTab]);
+        // if (request.domTreeObj) {
+        //   //set first render of tree
+        //   setNodes(request.domTreeObj.currentTab);
+        // }
+        // if (request.updatedTree) {
+        //   setNodes(request.updatedTree[currentTab]);
         // }
         if (request.storedVitalsfromBG) {
           setCoreVitals(request.storedVitalsfromBG);
@@ -49,8 +49,42 @@ function App(): JSX.Element {
     });
   }, [nodes]);
   //size of nodes in Dom Tree
-  const nodeSize = { x: 150, y: 50 };
+  const nodeColors = {
+    0: '',
+    6: '#99e2b4',
+    7: '#88d4dB',
+    8: '#9ff7cb',
+    9: '#67b99a',
+    10: '#56ab91',
+    11: '#469d89',
+    12: '#358f80',
+    13: '#248277',
+    14: '#14746f',
+    15: '#036666',
+    16: '#40916c',
+    17: '#25a244',
+    18: '#208b3a',
+    19: '#1a7431',
+    20: '#155d27',
+    21: '#10451d',
+    22: '#2d6a4f',
+  };
 
+  const nodeSize = { x: 150, y: 50 };
+  const renderCustomNodeElement = ({ nodeDatum, toggleNode }) => {
+    console.log(nodeDatum);
+    const circleProps = {
+      r: 10,
+      fill: nodeColors[nodeDatum.attributes?.lane.toString()], // Set fill color based on the node's color attribute
+    };
+
+    return (
+      <g onClick={toggleNode}>
+        <circle {...circleProps} />
+        <text>{nodeDatum.name}</text>
+      </g>
+    );
+  };
   return (
     <div className="App">
       <div id="webVitals">
@@ -85,6 +119,10 @@ function App(): JSX.Element {
           // orientation="vertical"
           pathFunc="step"
           // collapsible="false"
+          // rootNodeClassName="node__root"
+          // branchNodeClassName="node__branch"
+          // leafNodeClassName="node__leaf"
+          renderCustomNodeElement={renderCustomNodeElement}
         />
       </div>
     </div>

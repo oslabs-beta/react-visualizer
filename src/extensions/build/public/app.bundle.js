@@ -860,7 +860,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".App {\n  padding: 16px;\n}\n", "",{"version":3,"sources":["webpack://./src/client/components/App.css"],"names":[],"mappings":"AAAA;EACE,aAAa;AACf","sourcesContent":[".App {\n  padding: 16px;\n}\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, ".App {\n  padding: 16px;\n  background-color: white;\n}\n\n.node__root>circle {\n  fill: red;\n}\n\n.node__branch>circle {\n  fill: yellow;\n}\n\n.node__leaf>circle {\n  fill: green;\n  /* Let's also make the radius of leaf nodes larger\n  r: 40; */\n}", "",{"version":3,"sources":["webpack://./src/client/components/App.css"],"names":[],"mappings":"AAAA;EACE,aAAa;EACb,uBAAuB;AACzB;;AAEA;EACE,SAAS;AACX;;AAEA;EACE,YAAY;AACd;;AAEA;EACE,WAAW;EACX;UACQ;AACV","sourcesContent":[".App {\n  padding: 16px;\n  background-color: white;\n}\n\n.node__root>circle {\n  fill: red;\n}\n\n.node__branch>circle {\n  fill: yellow;\n}\n\n.node__leaf>circle {\n  fill: green;\n  /* Let's also make the radius of leaf nodes larger\n  r: 40; */\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -37613,12 +37613,12 @@ function App() {
             let currentTab = tabs[0].id;
             // listening to background.js connection
             chrome.runtime.onMessage.addListener((request) => {
-                if (request.domTreeObj) {
-                    //set first render of tree
-                    setNodes(request.domTreeObj.currentTab);
-                }
-                // if (request.fromBGtree2) {
-                //   setNodes(request.fromBGtree2[currentTab]);
+                // if (request.domTreeObj) {
+                //   //set first render of tree
+                //   setNodes(request.domTreeObj.currentTab);
+                // }
+                // if (request.updatedTree) {
+                //   setNodes(request.updatedTree[currentTab]);
                 // }
                 if (request.storedVitalsfromBG) {
                     setCoreVitals(request.storedVitalsfromBG);
@@ -37636,7 +37636,37 @@ function App() {
         });
     }, [nodes]);
     //size of nodes in Dom Tree
+    const nodeColors = {
+        0: '',
+        6: '#99e2b4',
+        7: '#88d4dB',
+        8: '#9ff7cb',
+        9: '#67b99a',
+        10: '#56ab91',
+        11: '#469d89',
+        12: '#358f80',
+        13: '#248277',
+        14: '#14746f',
+        15: '#036666',
+        16: '#40916c',
+        17: '#25a244',
+        18: '#208b3a',
+        19: '#1a7431',
+        20: '#155d27',
+        21: '#10451d',
+        22: '#2d6a4f',
+    };
     const nodeSize = { x: 150, y: 50 };
+    const renderCustomNodeElement = ({ nodeDatum, toggleNode }) => {
+        console.log(nodeDatum);
+        const circleProps = {
+            r: 10,
+            fill: nodeColors[nodeDatum.attributes?.lane.toString()], // Set fill color based on the node's color attribute
+        };
+        return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("g", { onClick: toggleNode },
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("circle", { ...circleProps }),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("text", null, nodeDatum.name)));
+    };
     return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "App" },
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "webVitals" },
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "coreVitals" },
@@ -37675,7 +37705,12 @@ function App() {
                 // @ts-ignore
                 data: nodes, nodeSize: nodeSize, 
                 // orientation="vertical"
-                pathFunc: "step" }))));
+                pathFunc: "step", 
+                // collapsible="false"
+                // rootNodeClassName="node__root"
+                // branchNodeClassName="node__branch"
+                // leafNodeClassName="node__leaf"
+                renderCustomNodeElement: renderCustomNodeElement }))));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 

@@ -86,11 +86,13 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     if (message.tree) {
       //set tab as key, tree object as value
       treeOfTrees[selectedTabId] = message.tree;
-      // chrome.storage.session.set({ key: treeOfTrees }).then(() => {
-      //   console.log('setting chrome storage to trees in first render');
-      //   console.log(treeOfTrees);
-      // });
-      chrome.runtime.sendMessage({ domTreeObj: treeOfTrees });
+      chrome.storage.session.set({ key: treeOfTrees }).then(() => {
+        console.log('setting chrome storage to trees in first render');
+        console.log(treeOfTrees);
+      });
+      console.log('msg tree in first render');
+      console.log(treeOfTrees);
+      // chrome.runtime.sendMessage({ domTreeObj: treeOfTrees });
     }
     if (message.nestedObject) {
       treeOfTrees[selectedTabId] = message.nestedObject;
@@ -99,7 +101,9 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
         console.log('setting chrome storage to tres in second render');
         console.log(treeOfTrees);
       });
-      // chrome.runtime.sendMessage({ fromBGtree2: treeOfTrees });
+      console.log('setting chrome storage to tres in second render');
+      console.log(treeOfTrees);
+      // chrome.runtime.sendMessage({ updatedTree: treeOfTrees });
     }
     if (message.storedVitals) {
       chrome.runtime.sendMessage({ storedVitalsfromBG: message.storedVitals });

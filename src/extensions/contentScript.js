@@ -8,7 +8,20 @@
 import { onCLS, onFID, onLCP, onFCP, onTTFB, measure } from 'web-vitals';
 //user device info
 import { getDeviceInfo } from 'web-vitals-reporter';
-console.log(getDeviceInfo());
+
+function getLane(node) {
+  const lastTwo = node.className.slice(-2);
+  const lastOne = node.className.slice(-1);
+  console.log('last two: ', lastTwo);
+  if (!isNaN(lastTwo)) {
+    console.log('s');
+    return Number(lastTwo);
+  } else if (!isNaN(lastOne)) return Number(lastOne);
+  return 0;
+}
+function getAttributes(node) {
+  return { type: node.className || node.nodeName, lane: getLane(node) };
+}
 
 let coreWebVitals = {};
 function storeVitals() {
@@ -73,11 +86,6 @@ const walkerFilter = {
  * @param {DOM node} DOM node
  * @return an object representing the attributes for D3Node.
  */
-//TODO: decide what attributes to add to d3Node
-
-function getAttributes(node) {
-  return { type: node.className || node.nodeName };
-}
 
 /**
  * Get and return the children nodes of the node corresponding to a tree walker
