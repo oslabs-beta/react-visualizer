@@ -6,7 +6,23 @@
 
 import { HostConfig } from 'react-reconciler';
 import { DefaultEventPriority } from 'react-reconciler/constants';
-import createDOMElements from './createDOMElements';
+import createDOMElements, {setStyles,isEvent} from './createDOMElements';
+
+function shallowDiff(oldProps, newProps) {
+  // Return a diff between the new and the old object
+  
+  const uniqueProps = new Set([...Object.keys(oldProps), ...Object.keys(newProps)]);
+  const changedProps = Array.from(uniqueProps).filter(
+    //maybe add some logic to handle cases where the the probs are deeply identical
+    
+    propName => {
+      if (typeof oldProps[propName] === 'function' && typeof newProps[propName] === 'function') {
+        return oldProps[propName].toString() !== newProps[propName].toString();
+      } else return oldProps[propName] !== newProps[propName]
+    }
+  );
+  if (changedProps.length !== 0) return changedProps;
+}
 
 const getHostConfig: HostConfig = () => ({
   createInstance: (
@@ -61,7 +77,9 @@ const getHostConfig: HostConfig = () => ({
     newProps,
     rootContainer,
     hostContext
-  ) => {},
+  ) => {
+    return shallowDiff(oldProps, newProps); 
+  },
   commitUpdate: (
     instance,
     updatePayload,
@@ -70,11 +88,46 @@ const getHostConfig: HostConfig = () => ({
     nextProps,
     internalHandle
   ) => {
-    if (isTransition(internalHandle)) {
-      // eslint-disable-next-line no-param-reassign
-      instance.style.backgroundColor = '#66ff99';
-      instance.classList.add('c-Transition');
-    }
+    updatePayload.forEach(propName => {
+      // children changes is done by the other methods like `commitTextUpdate`
+      if (propName === 'children') {
+        const propValue = newProps[propName];
+        if (typeof propValue === 'string' || typeof propValue === 'number') {
+          domElement.textContent = propValue;
+        }
+        return;
+      }
+
+      if (propName === 'style') {
+        // Return a diff between the new and the old styles
+        const styleDiffs = shallowDiff(oldProps.style, newProps.style);
+        const finalStyles = styleDiffs.reduce((acc, styleName) => {
+      
+          if (!newProps.style[styleName]) acc[styleName] = '';
+          else acc[styleName] = newProps.style[styleName];
+
+          return acc;
+        }, {});
+
+        setStyles(domElement, finalStyles);
+      } else if (newProps[propName] || typeof newProps[propName] === 'number') {
+        
+        if (isEvent(propName, domElement)) {
+          const eventName = propName.toLowerCase().replace('on', '');
+          domElement.removeEventListener(eventName, oldProps[propName]);
+          domElement.addEventListener(eventName, newProps[propName]);
+        } else {
+          domElement.setAttribute(propName, newProps[propName]);
+        }
+      } else {
+        if (isEvent(propName, domElement)) {
+          const eventName = propName.toLowerCase().replace('on', '');
+          domElement.removeEventListener(eventName, oldProps[propName]);
+        } else {
+          domElement.removeAttribute(propName);
+        }
+      }
+    });
   },
   commitTextUpdate: (textInstance, oldText, newText) => {
     // eslint-disable-next-line no-param-reassign, @typescript-eslint/no-unsafe-assignment
