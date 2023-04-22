@@ -1,6 +1,6 @@
 {
   "name": "creact-visualizer",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "NPM Package",
   "main": "build/bundle.js",
   "types": "build/bundle.d.ts",

@@ -142,6 +142,8 @@ const getHostConfig: HostConfig = () => ({
   finalizeInitialChildren: () => {},
   shouldDeprioritizeSubtree: (type, nextProps) => !nextProps.hidden,
   detachDeletedInstance: () => {},
+  getPublicInstance: () => {},
+  preparePortalMount: () => {},
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   getCurrentEventPriority: () => DefaultEventPriority,
   hideInstance: () => {},
