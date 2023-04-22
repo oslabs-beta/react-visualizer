@@ -1,12 +1,10 @@
 name: Chrome Extension
 
-on:
-  pull_request:
-    branches:
-      - main
+on: [pull_request]
 
 jobs:
-  build:
+  chrome-extension-build:
+    name: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -19,7 +17,7 @@ jobs:
         run: npm ci
         working-directory: chrome-extension
       - name: Build
-        run: npm run build
+        run: npm run compile
         working-directory: chrome-extension
       - name: Check build status
         run: |
