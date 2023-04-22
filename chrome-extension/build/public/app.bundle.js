@@ -37603,40 +37603,63 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_d3_tree__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-d3-tree */ "./node_modules/react-d3-tree/lib/esm/index.js");
 
 
+// import treeNodes from '../../extensions/contentScript.js';
 
+const nodeColors = {
+    0: '',
+    6: '#99e2b4',
+    7: '#88d4dB',
+    8: '#9ff7cb',
+    9: '#67b99a',
+    10: '#56ab91',
+    11: '#469d89',
+    12: '#358f80',
+    13: '#248277',
+    14: '#14746f',
+    15: '#036666',
+    16: '#40916c',
+    17: '#25a244',
+    18: '#208b3a',
+    19: '#1a7431',
+    20: '#155d27',
+    21: '#10451d',
+    22: '#2d6a4f',
+};
+const renderCustomNodeElement = ({ nodeDatum, toggleNode }) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("g", { onClick: toggleNode },
+    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("circle", { r: "15", fill: nodeColors[nodeDatum.attributes?.lane.toString()] }),
+    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("text", null, nodeDatum.name),
+    nodeDatum.attributes?.lane && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("text", { x: "20", dy: "10", strokeWidth: "1" },
+        "Lane: ",
+        nodeDatum.attributes.lane)),
+    nodeDatum.attributes?.suspense && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("text", { x: "20", dy: "10", strokeWidth: "1" }, "Suspense")),
+    nodeDatum.attributes?.loadtime && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("text", { x: "20", dy: "22", strokeWidth: "1" }, `Loadingtime: ${nodeDatum.attributes.loadtime}ms`))));
 function App() {
     const [nodes, setNodes] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
     // instantiate to store web-vital stats passed from contentScript.js
     const [coreVitals, setCoreVitals] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
+    // listening to content script long-lived connection
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            const currentTab = tabs[0].id;
-            // listening to background.js connection
-            chrome.runtime.onMessage.addListener((request) => {
-                if (request.domTreeObj) {
-                    // set first render of tree
-                    setNodes(request.domTreeObj.currentTab);
-                }
-                // if (request.fromBGtree2) {
-                //   setNodes(request.fromBGtree2[currentTab]);
-                // }
-                if (request.storedVitalsfromBG) {
-                    setCoreVitals(request.storedVitalsfromBG);
-                }
-            });
-            // listen for changes in chrome storage
-            chrome.storage.onChanged.addListener((changes) => {
-                if (currentTab !== undefined) {
-                    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                    changes.key.newValue[currentTab];
-                    // newTree[currentTab] = changes.key.newValue[currentTab];
-                    // Update the D3.js tree in App.tsx with the updated nested object
-                    setNodes(changes.key.newValue[currentTab]);
-                }
+        chrome.runtime.onConnect.addListener((port) => {
+            console.assert(port.name === 'domTreeConnection');
+            port.onMessage.addListener((msg) => {
+                // render initial tree
+                if (msg.treeData)
+                    setNodes(JSON.parse(msg.treeData));
             });
         });
+        // listening to contentScript.js and background.js connection
+        chrome.runtime.onMessage.addListener((request) => {
+            if (request.storedVitals) {
+                setCoreVitals(request.storedVitals);
+            }
+            // listening to contentScript.js and background.js connection
+            if (request.nestedObject) {
+                // Update the D3.js tree in App.tsx with the updated nested object
+                setNodes(request.nestedObject);
+            }
+        });
     }, [nodes]);
-    // size of nodes in Dom Tree
+    // setting size of nodes in tree
     const nodeSize = { x: 150, y: 50 };
     return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "App" },
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "webVitals" },
@@ -37644,30 +37667,24 @@ function App() {
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null,
                     "Cumulative Layout Shift (CLS): ",
                     coreVitals.cls,
-                    ' ',
                     coreVitals.clsRating),
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null,
                     "First Input Delay (FID): ",
                     coreVitals.fid,
                     " ",
-                    coreVitals.fidRating,
-                    ' '),
+                    coreVitals.fidRating),
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null,
                     "Largest Contentful Paint (LCP): ",
                     coreVitals.lcp,
-                    ' ',
-                    coreVitals.lcpRating,
-                    ' ')),
+                    coreVitals.lcpRating)),
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "otherVitals" },
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null,
                     "First Contentful Paint (FCP): ",
                     coreVitals.fcp,
-                    ' ',
                     coreVitals.fcpRating),
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", null,
                     "Time to First Byte (TTFB): ",
                     coreVitals.ttfb,
-                    " ",
                     coreVitals.ttfbRating))),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "treeWrapper", style: { width: '100em', height: '100em' } },
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_d3_tree__WEBPACK_IMPORTED_MODULE_2__["default"]
@@ -37676,7 +37693,9 @@ function App() {
                 // @ts-ignore
                 data: nodes, nodeSize: nodeSize, 
                 // orientation="vertical"
-                pathFunc: "step" }))));
+                pathFunc: "step", 
+                // collapsible="false"
+                renderCustomNodeElement: renderCustomNodeElement }))));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 

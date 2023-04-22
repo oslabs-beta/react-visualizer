@@ -7,12 +7,17 @@
   "scripts": {
     "dev": "concurrently --kill-others \"npm run server\" \"npm run client\"",
     "client": "webpack serve --config webpack.config.js",
-    "build": "webpack --config webpack.config.js",
+    "build": "nodemon --watch src --exec 'npm run compile'",
+    "compile": "webpack --config webpack.config.js",
+    "start": "ts-node src/server/index.ts",
+
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest --detectOpenHandles",
     "coverage": "jest --detectOpenHandles --collect-coverage",
-    "check": "npm run build && npm run lint && npm run coverage"
+    "check": "npm run build && npm run lint && npm run coverage",
+    "watch": "webpack --watch --config webpack.config.js"
+
   },
   "repository": {
     "type": "git",

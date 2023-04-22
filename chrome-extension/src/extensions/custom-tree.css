@@ -9,5 +9,5 @@
 .node__leaf>circle {
     fill: green;
     /* Let's also make the radius of leaf nodes larger */
-    r: 40;
+    /* r: 40; */
 }

@@ -2,163 +2,6 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/web-vitals-reporter/src/index.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/web-vitals-reporter/src/index.js ***!
-  \*******************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "createApiReporter": () => (/* binding */ createApiReporter),
-/* harmony export */   "getDeviceInfo": () => (/* binding */ getDeviceInfo)
-/* harmony export */ });
-/**
- * @typedef {Object<string,any>} Result
- * @typedef {import('web-vitals').Metric | Object<string,any>} Metric
- * @typedef {{ effectiveType: 'slow-2g' | '2g' | '3g' | '4g', rtt: number, downlink: number }} NetworkInformation
- *
- * @typedef {object} CreateApiReporterOptions
- * @prop {object} [initial]
- * @prop {(metric: Metric, result: Result) => Result} [mapMetric]
- * @prop {(result: Result) => Result | void} [beforeSend]
- * @prop {(url: string, result: Result) => any} [onSend]
- */
-
-/**
- * Create Web Vitals API reporter, that accepts `Metric` values and sends it to `url`
- * using `navigator.sendBeacon` when available or fallbacks back to XMLHttpRequest.
- *
- * The function sends request only once.
- * Use `onSend` to implement a custom logic.
- *
- * @param {string} url
- * @param {CreateApiReporterOptions} [opts]
- * @return {(metric: Metric) => void}
- */
-
-function createApiReporter(url, opts = {}) {
-  let isSent = false
-  let isCalled = false
-  let result = /** @type {Result} */ ({ id: generateUniqueId(), ...opts.initial })
-
-  const sendValues = () => {
-    if (isSent) return // data is already sent
-    if (!isCalled) return // no data collected
-
-    result.duration = now()
-    if (opts.beforeSend) {
-      const newResult = opts.beforeSend(result)
-      if (newResult) result = { ...result, ...newResult }
-    }
-    isSent = true
-    if (opts.onSend) {
-      opts.onSend(url, result)
-    } else {
-      if (typeof navigator === 'undefined') return
-      if (navigator.sendBeacon) return navigator.sendBeacon(url, JSON.stringify(result))
-      const client = new XMLHttpRequest()
-      client.open('POST', url, false) // third parameter indicates sync xhr
-      client.setRequestHeader('Content-Type', 'text/plain;charset=UTF-8')
-      client.send(JSON.stringify(result))
-    }
-  }
-
-  const mapMetric =
-    opts.mapMetric ||
-    function (metric) {
-      const isWebVital = ['FCP', 'TTFB', 'LCP', 'CLS', 'FID'].indexOf(metric.name) !== -1
-      return { [metric.name]: isWebVital ? round(metric.value, metric.name === 'CLS' ? 4 : 0) : metric.value }
-    }
-
-  /** @param {Metric} metric */
-  const report = (metric) => {
-    if (!isCalled) isCalled = true
-    result = { ...result, ...mapMetric(metric, result) }
-  }
-
-  // should be the last call to capture latest CLS
-  setTimeout(() => {
-    // Safari does not fire "visibilitychange" on the tab close
-    // So we have 2 options: loose Safari data, or loose LCP/CLS that depends on "visibilitychange" logic.
-    // Current solution: if LCP/CLS supported, use `onHidden` otherwise, use `pagehide` to fire the callback in the end.
-    //
-    // More details: https://github.com/treosh/web-vitals-reporter/issues/3
-    const supportedEntryTypes = (PerformanceObserver && PerformanceObserver.supportedEntryTypes) || []
-    const isLatestVisibilityChangeSupported = supportedEntryTypes.indexOf('layout-shift') !== -1
-
-    if (isLatestVisibilityChangeSupported) {
-      const onVisibilityChange = () => {
-        if (document.visibilityState === 'hidden') {
-          sendValues()
-          removeEventListener('visibilitychange', onVisibilityChange, true)
-        }
-      }
-      addEventListener('visibilitychange', onVisibilityChange, true)
-    } else {
-      addEventListener('pagehide', sendValues, { capture: true, once: true })
-    }
-  })
-
-  return report
-}
-
-/**
- * Get device information.
- * - Effective connection type: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
- * - Device memory: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/deviceMemory
- */
-
-function getDeviceInfo() {
-  const nav = /** @type {null | (Navigator & { deviceMemory: number, connection: NetworkInformation })} */ (typeof navigator ===
-  'undefined'
-    ? null
-    : navigator)
-  const conn = nav && nav.connection ? nav.connection : null
-  return {
-    url: location ? location.href : null,
-    referrer: document ? document.referrer : null,
-    userAgent: nav ? nav.userAgent : null,
-    memory: nav ? nav.deviceMemory : undefined,
-    cpus: nav ? nav.hardwareConcurrency : undefined,
-    connection: conn ? { effectiveType: conn.effectiveType, rtt: conn.rtt, downlink: conn.downlink } : undefined,
-  }
-}
-
-/**
- * Get time since a session started.
- */
-
-function now() {
-  const perf = typeof performance === 'undefined' ? null : performance
-  return perf && perf.now ? round(perf.now()) : null
-}
-
-/**
- * Round, source: https://stackoverflow.com/a/18358056
- *
- * @param {number} val
- * @param {number} [precision]
- * @return {number}
- */
-
-function round(val, precision = 0) {
-  // @ts-ignore
-  return +(Math.round(`${val}e+${precision}`) + `e-${precision}`)
-}
-
-/**
- * Generate a unique id, copied from:
- * https://github.com/GoogleChrome/web-vitals/blob/master/src/lib/generateUniqueID.ts
- */
-
-function generateUniqueId() {
-  return `v1-${Date.now()}-${Math.floor(Math.random() * (9e12 - 1)) + 1e12}`
-}
-
-
-/***/ }),
-
 /***/ "./node_modules/web-vitals/dist/web-vitals.js":
 /*!****************************************************!*\
   !*** ./node_modules/web-vitals/dist/web-vitals.js ***!
@@ -255,7 +98,9 @@ var __webpack_exports__ = {};
   \*****************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var web_vitals__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! web-vitals */ "./node_modules/web-vitals/dist/web-vitals.js");
-/* harmony import */ var web_vitals_reporter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! web-vitals-reporter */ "./node_modules/web-vitals-reporter/src/index.js");
+/* eslint-disable */
+// @ts-nocheck
+
 /***
  * we are assuming webvitals package is installed from npm
  * To not use npm install:
@@ -265,8 +110,6 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 //user device info
-
-console.log((0,web_vitals_reporter__WEBPACK_IMPORTED_MODULE_1__.getDeviceInfo)());
 
 let coreWebVitals = {};
 function storeVitals() {
@@ -299,7 +142,6 @@ function storeVitals() {
   return coreWebVitals;
 }
 //storeVitals();
-
 /**
  * @param {DOM node}
  * @return {treeWalker}
@@ -333,8 +175,24 @@ const walkerFilter = {
  */
 //TODO: decide what attributes to add to d3Node
 
+function getLane(node) {
+  if (node.className.includes('TransitionLane')) {
+    const lastTwo = node.className.slice(-2);
+    const lastOne = node.className.slice(-1);
+    //console.log("last two: ", lastTwo);
+    if (!isNaN(lastTwo)) {
+      return Number(lastTwo);
+    } else if (!isNaN(lastOne)) return Number(lastOne);
+  }
+  return 0;
+}
 function getAttributes(node) {
-  return { type: node.className || node.nodeName };
+  return {
+    type: node.className || node.nodeName,
+    lane: getLane(node),
+    suspense: node.className.includes('Suspense'),
+    loadtime: node.getAttribute('loadtime'),
+  };
 }
 
 /**
@@ -395,31 +253,29 @@ function grabData() {
 }
 
 let d3Tree = grabData();
-chrome.runtime.sendMessage({ tree: d3Tree });
+const treeData4 = JSON.stringify(d3Tree);
 
+console.log('D3 tree is converted:', d3Tree);
+
+//listen to changes in DOM tree
 const grabTree = new MutationObserver(() => {
   let updatedTree = grabData();
   chrome.runtime.sendMessage({ nestedObject: updatedTree });
   let updatedVitals = storeVitals();
   chrome.runtime.sendMessage({ storedVitals: updatedVitals });
 });
+
 const observerConfig = {
   attributes: true,
   childList: true,
   subtree: true,
 };
+
 grabTree.observe(document.documentElement, observerConfig);
 
-// const port = chrome.runtime.connect({ name: 'knockknock' });
-// port.postMessage({ joke: 'Knock knock' });
-// console.log(port.name);
-// port.onMessage.addListener(function (msg) {
-//   console.log('msg in content.js', msg);
-//   if (msg.question === "Who's there?")
-//     port.postMessage({ treeData: treeData4 });
-//   else if (msg.question === 'Madame who?')
-//     port.postMessage({ answer: 'Madame... Bovary' });
-// });
+//create long-lived connection
+const port = chrome.runtime.connect({ name: 'domTreeConnection' });
+port.postMessage({ treeData: treeData4 });
 
 })();
 
