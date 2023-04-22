@@ -1,24 +1,36 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
 
 import { HostConfig } from 'react-reconciler';
 import { DefaultEventPriority } from 'react-reconciler/constants';
-import createDOMElements, {setStyles,isEvent} from './createDOMElements';
+import createDOMElements, { setStyles, isEvent } from './createDOMElements';
+import { Props } from '../types/types';
 
-function shallowDiff(oldProps, newProps) {
+// eslint-disable-next-line consistent-return
+function shallowDiff(oldProps, newProps): Props[] {
   // Return a diff between the new and the old object
-  
-  const uniqueProps = new Set([...Object.keys(oldProps), ...Object.keys(newProps)]);
+
+  const uniqueProps = new Set([
+    ...Object.keys(oldProps),
+    ...Object.keys(newProps),
+  ]);
   const changedProps = Array.from(uniqueProps).filter(
-    //maybe add some logic to handle cases where the the probs are deeply identical
-    
-    propName => {
-      if (typeof oldProps[propName] === 'function' && typeof newProps[propName] === 'function') {
+    // maybe add some logic to handle cases where the the probs are deeply identical
+
+    (propName) => {
+      if (
+        typeof oldProps[propName] === 'function' &&
+        typeof newProps[propName] === 'function'
+      ) {
         return oldProps[propName].toString() !== newProps[propName].toString();
-      } else return oldProps[propName] !== newProps[propName]
+      }
+      return oldProps[propName] !== newProps[propName];
     }
   );
   if (changedProps.length !== 0) return changedProps;
@@ -77,9 +89,7 @@ const getHostConfig: HostConfig = () => ({
     newProps,
     rootContainer,
     hostContext
-  ) => {
-    return shallowDiff(oldProps, newProps); 
-  },
+  ) => shallowDiff(oldProps, newProps),
   commitUpdate: (
     instance,
     updatePayload,
@@ -88,7 +98,7 @@ const getHostConfig: HostConfig = () => ({
     nextProps,
     internalHandle
   ) => {
-    updatePayload.forEach(propName => {
+    updatePayload.forEach((propName) => {
       // children changes is done by the other methods like `commitTextUpdate`
       if (propName === 'children') {
         const propValue = newProps[propName];
@@ -102,7 +112,6 @@ const getHostConfig: HostConfig = () => ({
         // Return a diff between the new and the old styles
         const styleDiffs = shallowDiff(oldProps.style, newProps.style);
         const finalStyles = styleDiffs.reduce((acc, styleName) => {
-      
           if (!newProps.style[styleName]) acc[styleName] = '';
           else acc[styleName] = newProps.style[styleName];
 
@@ -111,7 +120,6 @@ const getHostConfig: HostConfig = () => ({
 
         setStyles(domElement, finalStyles);
       } else if (newProps[propName] || typeof newProps[propName] === 'number') {
-        
         if (isEvent(propName, domElement)) {
           const eventName = propName.toLowerCase().replace('on', '');
           domElement.removeEventListener(eventName, oldProps[propName]);
@@ -119,13 +127,11 @@ const getHostConfig: HostConfig = () => ({
         } else {
           domElement.setAttribute(propName, newProps[propName]);
         }
+      } else if (isEvent(propName, domElement)) {
+        const eventName = propName.toLowerCase().replace('on', '');
+        domElement.removeEventListener(eventName, oldProps[propName]);
       } else {
-        if (isEvent(propName, domElement)) {
-          const eventName = propName.toLowerCase().replace('on', '');
-          domElement.removeEventListener(eventName, oldProps[propName]);
-        } else {
-          domElement.removeAttribute(propName);
-        }
+        domElement.removeAttribute(propName);
       }
     });
   },
