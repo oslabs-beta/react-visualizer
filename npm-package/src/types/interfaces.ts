@@ -5,6 +5,7 @@ export interface OpaqueHandleInterface extends OpaqueHandle {
   return: OpaqueHandleInterface | null;
   tag: number | null;
   lanes: number | null;
+  actualDuration?: number;
 }
 
 export interface HTMLElementInterface extends HTMLElement {

@@ -1,58 +1,60 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   HTMLElementInterface,
   OpaqueHandleInterface,
   RenderElementsProps,
 } from '../types/interfaces';
-import { Type } from '../types/types';
+import { Type, Props } from '../types/types';
 import getLaneNum from './getLaneNum';
 import hasSuspense from './hasSuspense';
 import hasTransition from './hasTransition';
 import setTransitionColor from './setTransitionColor';
+
+// helper functions
+
+export const setStyles = (props: Props, element: HTMLElement): void => {
+  Object.keys(props.style).forEach((propName) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    element.style.setProperty(propName.toLowerCase(), props.style[propName]);
+  });
+};
+
+export const isEvent = (key: string, element: HTMLElement): boolean =>
+  key.startsWith('on') && key.toLowerCase() in element;
 
 const createDOMElements = (
   type: Type,
   props: RenderElementsProps,
   internalInstanceHandle: OpaqueHandleInterface
 ): HTMLElementInterface => {
-  const { className, id, style, onClick, onChange, placeholder } = props;
-  const element: HTMLElementInterface = document.createElement(type);
+  const element = document.createElement(type);
 
-  element.className = className || '';
-
-  if (id) {
-    element.id = id;
+  if (internalInstanceHandle.actualDuration !== undefined) {
+    element.setAttribute(
+      'loadtime',
+      internalInstanceHandle?.actualDuration.toFixed(2).toString()
+    );
   }
 
-  if (onClick) {
-    element.addEventListener('click', onClick);
-  }
-  if (onChange) {
-    element.addEventListener('input', onChange);
-  }
-
-  if (placeholder) {
-    element.placeholder = placeholder;
-  }
-
-  if (props.src) {
-    element.src = props.src;
-  }
-
-  if (style) {
-    Object.keys(style).forEach((key) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore: 7015
-      element.style[key] = style[key];
-    });
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [propName, propValue] of Object.entries(props)) {
+    // eslint-disable-next-line no-continue
+    if (propName === 'children') continue;
+    else if (propName === 'style') {
+      setStyles(props, element);
+    } else if (propName === 'className') {
+      element.setAttribute('class', propValue);
+    } else if (isEvent(propName, element)) {
+      const eventName = propName.toLowerCase().replace('on', '');
+      element.addEventListener(eventName, propValue);
+      if (type === 'input' && propName === 'onChange')
+        element.addEventListener('input', propValue);
+    } else if (propName in element) element.setAttribute(propName, propValue);
   }
 
   if (hasSuspense(internalInstanceHandle)) {
     element.style.border = 'solid lightblue';
     element.classList.add('Suspense');
-    const tooltip = document.createElement('span');
-    tooltip.innerHTML = '&#128570 Phew! It took me 1223ms to load!';
-    tooltip.className = 'SuspensePopup';
-    element.appendChild(tooltip);
   }
 
   const laneNum = getLaneNum(internalInstanceHandle);
