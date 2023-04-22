@@ -94,8 +94,8 @@ const getHostConfig: HostConfig = () => ({
     instance,
     updatePayload,
     type,
-    prevProps,
-    nextProps,
+    oldProps,
+    newProps,
     internalHandle
   ) => {
     updatePayload.forEach((propName) => {
