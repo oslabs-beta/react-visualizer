@@ -37640,7 +37640,7 @@ function App() {
     // listening to content script long-lived connection
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
         chrome.runtime.onConnect.addListener((port) => {
-            console.assert(port.name === 'domTreeConnection');
+            console.assert(port.name === 'domTreeConnection'); // eslint-disable-line
             port.onMessage.addListener((msg) => {
                 // render initial tree
                 if (msg.treeData)

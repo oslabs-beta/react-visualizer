@@ -68,7 +68,7 @@ function App(): JSX.Element {
   // listening to content script long-lived connection
   useEffect(() => {
     chrome.runtime.onConnect.addListener((port) => {
-      console.assert(port.name === 'domTreeConnection');
+      console.assert(port.name === 'domTreeConnection'); // eslint-disable-line
       port.onMessage.addListener((msg) => {
         // render initial tree
         if (msg.treeData) setNodes(JSON.parse(msg.treeData));
