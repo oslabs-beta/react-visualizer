@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+
 /***
  * we are assuming webvitals package is installed from npm
  * To not use npm install:
@@ -8,8 +11,6 @@
 import { onCLS, onFID, onLCP, onFCP, onTTFB, measure } from 'web-vitals';
 //user device info
 import { getDeviceInfo } from 'web-vitals-reporter';
-console.log(getDeviceInfo());
-
 let coreWebVitals = {};
 function storeVitals() {
   //user need to interact with the page for FID to be reported
@@ -41,7 +42,6 @@ function storeVitals() {
   return coreWebVitals;
 }
 //storeVitals();
-
 /**
  * @param {DOM node}
  * @return {treeWalker}
@@ -75,8 +75,24 @@ const walkerFilter = {
  */
 //TODO: decide what attributes to add to d3Node
 
+function getLane(node) {
+  if (node.className.includes('TransitionLane')) {
+    const lastTwo = node.className.slice(-2);
+    const lastOne = node.className.slice(-1);
+    //console.log("last two: ", lastTwo);
+    if (!isNaN(lastTwo)) {
+      return Number(lastTwo);
+    } else if (!isNaN(lastOne)) return Number(lastOne);
+  }
+  return 0;
+}
 function getAttributes(node) {
-  return { type: node.className || node.nodeName };
+  return {
+    type: node.className || node.nodeName,
+    lane: getLane(node),
+    suspense: node.className.includes('Suspense'),
+    loadtime: node.getAttribute('loadtime'),
+  };
 }
 
 /**
@@ -137,28 +153,26 @@ function grabData() {
 }
 
 let d3Tree = grabData();
-chrome.runtime.sendMessage({ tree: d3Tree });
+const treeData4 = JSON.stringify(d3Tree);
 
+console.log('D3 tree is converted:', d3Tree);
+
+//listen to changes in DOM tree
 const grabTree = new MutationObserver(() => {
   let updatedTree = grabData();
   chrome.runtime.sendMessage({ nestedObject: updatedTree });
   let updatedVitals = storeVitals();
   chrome.runtime.sendMessage({ storedVitals: updatedVitals });
 });
+
 const observerConfig = {
   attributes: true,
   childList: true,
   subtree: true,
 };
+
 grabTree.observe(document.documentElement, observerConfig);
 
-// const port = chrome.runtime.connect({ name: 'knockknock' });
-// port.postMessage({ joke: 'Knock knock' });
-// console.log(port.name);
-// port.onMessage.addListener(function (msg) {
-//   console.log('msg in content.js', msg);
-//   if (msg.question === "Who's there?")
-//     port.postMessage({ treeData: treeData4 });
-//   else if (msg.question === 'Madame who?')
-//     port.postMessage({ answer: 'Madame... Bovary' });
-// });
+//create long-lived connection
+const port = chrome.runtime.connect({ name: 'domTreeConnection' });
+port.postMessage({ treeData: treeData4 });

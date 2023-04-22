@@ -32,25 +32,13 @@ let connections = {};
 const treeOfTrees = {};
 
 chrome.tabs.onActivated.addListener((activeInfo) => {
-  //chrome.runtime.reload();
   let selectedTabId = activeInfo.tabId;
-
-  // chrome.scripting
-  //   .executeScript({
-  //     //target tab
-  //     // target: selectedTabId,
-  //     target: { tabId: selectedTabId },
-  //     //inject the content script to above tab
-  //     files: ['contentScript.js'],
-  //   })
-  //   .then(() => console.log('script injected again'));
 
   chrome.runtime.onConnect.addListener(function (devToolsConnection) {
     // assign the listener function to a variable so we can remove it later
     if (devToolsConnection.name == 'devtools-page') {
       var devToolsListener = function (message, sender, sendResponse) {
         // Inject a content script into the identified tab
-        //new 4/13
         connections[selectedTabId] = devToolsConnection;
         //expecting tabId and file:scriptToInject
         chrome.scripting
@@ -81,39 +69,32 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     }
   });
 
-  chrome.runtime.onMessage.addListener((message) => {
-    // Get the tree object from the message
-    if (message.tree) {
-      //set tab as key, tree object as value
-      treeOfTrees[selectedTabId] = message.tree;
-      // chrome.storage.session.set({ key: treeOfTrees }).then(() => {
-      //   console.log('setting chrome storage to trees in first render');
-      //   console.log(treeOfTrees);
-      // });
-      chrome.runtime.sendMessage({ domTreeObj: treeOfTrees });
-    }
-    if (message.nestedObject) {
-      treeOfTrees[selectedTabId] = message.nestedObject;
-      //set updated tree in chrome storage
-      chrome.storage.local.set({ key: treeOfTrees }).then(() => {
-        console.log('setting chrome storage to tres in second render');
-        console.log(treeOfTrees);
-      });
-      // chrome.runtime.sendMessage({ fromBGtree2: treeOfTrees });
-    }
-    if (message.storedVitals) {
-      chrome.runtime.sendMessage({ storedVitalsfromBG: message.storedVitals });
-    }
-  });
+  // chrome.runtime.onMessage.addListener((message) => {
+  // Get the tree object from the message
+  // if (message.tree) {
+  //   //set tab as key, tree object as value
+  //   treeOfTrees[selectedTabId] = message.tree;
+  //   chrome.storage.session.set({ key: treeOfTrees }).then(() => {
+  //     console.log('setting chrome storage to trees in first render');
+  //     console.log(treeOfTrees);
+  //   });
+  //   console.log('msg tree in first render');
+  //   console.log(treeOfTrees);
+  // chrome.runtime.sendMessage({ domTreeObj: treeOfTrees });
+  // }
+  // if (message.nestedObject) {
+  //   treeOfTrees[selectedTabId] = message.nestedObject;
+  //   //set updated tree in chrome storage
+  //   // chrome.storage.local.set({ key: treeOfTrees }).then(() => {
+  //   //   console.log('setting chrome storage to tres in second render');
+  //   //   console.log(treeOfTrees);
+  //   // });
+  //   console.log('setting chrome storage to tres in second render');
+  //   console.log(treeOfTrees);
+  //   chrome.runtime.sendMessage({ nestedObject: treeOfTrees });
+  // }
+  //     if (message.storedVitals) {
+  //       chrome.runtime.sendMessage({ storedVitalsfromBG: message.storedVitals });
+  //     }
+  //   });
 });
-
-// const port = chrome.runtime.connect({ name: 'knockknock' });
-// port.postMessage({ joke: 'Knock knock' });
-// console.log(port.name);
-// port.onMessage.addListener(function (msg) {
-//   console.log('msg in content.js', msg);
-//   if (msg.question === "Who's there?")
-//     port.postMessage({ treeData: treeOfTrees });
-//   else if (msg.question === 'Madame who?')
-//     port.postMessage({ answer: 'Madame... Bovary' });
-// });
