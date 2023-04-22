@@ -14,8 +14,7 @@
     "lint:fix": "eslint . --fix",
     "test": "jest --detectOpenHandles",
     "coverage": "jest --detectOpenHandles --collect-coverage",
-    "check": "npm run build && npm run lint && npm run coverage",
-    "watch": "webpack --watch --config webpack.config.js"
+    "check": "npm run build && npm run lint && npm run coverage"
     },
   "repository": {
     "type": "git",
