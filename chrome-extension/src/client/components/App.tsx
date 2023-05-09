@@ -1,6 +1,7 @@
+/* eslint-disable */
+
 import React, { useState, useEffect } from 'react';
 import './App.css';
-// import treeNodes from '../../extensions/contentScript.js';
 
 import Tree from 'react-d3-tree';
 
@@ -49,7 +50,6 @@ function App(): JSX.Element {
       onClick={() => {
         const selectedNode = nodeDatum.attributes.selector;
         if (boolObj[selectedNode] !== undefined) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
           boolObj[selectedNode] === true
             ? (boolObj[selectedNode] = false)
             : (boolObj[selectedNode] = true);
