@@ -11,6 +11,7 @@
 import { onCLS, onFID, onLCP, onFCP, onTTFB, measure } from 'web-vitals';
 //user device info
 import { getDeviceInfo } from 'web-vitals-reporter';
+
 let coreWebVitals = {};
 function storeVitals() {
   //user need to interact with the page for FID to be reported
@@ -86,12 +87,20 @@ function getLane(node) {
   }
   return 0;
 }
+// let idCounter = 0;
+
+// function getUniqueId() {
+//   return `id-${idCounter++}`;
+// }
+
 function getAttributes(node) {
   return {
     type: node.className || node.nodeName,
     lane: getLane(node),
     suspense: node.className.includes('Suspense'),
     loadtime: node.getAttribute('loadtime'),
+    selector: node.getAttribute('name'),
+    //new
   };
 }
 
@@ -108,11 +117,13 @@ function getChildren(walker) {
   while (childNode) {
     //convert walker to D3node
     let D3Node = createD3Node(walker);
-    let childWalker = createWalker(walker.currentNode);
+    // let childWalker = createWalker(walker.currentNode);
     //if the child node has children, recursively call the getChildren and assign the children to d3Node
-    if (childNode.children.length > 0)
+    if (childNode.children.length > 0) {
+      let childWalker = createWalker(walker.currentNode);
       D3Node.children = getChildren(childWalker);
-    //add the newly created D3Node to the children array
+      //add the newly created D3Node to the children array
+    }
     d3Children.push(D3Node);
     //walker move to the next sibling and reassign the childNode to the sibling node
     childNode = walker.nextSibling();
@@ -128,10 +139,12 @@ function getChildren(walker) {
 function createD3Node(walker) {
   //get the node corresponding to the walker object
   const node = walker.currentNode;
+  // console.log(node.getAttribute('name'));
   //initialize and a new D3Node that will be returned later
   let D3Node = {};
   D3Node.name = node.nodeName;
   D3Node.attributes = getAttributes(node);
+  D3Node.id = node.getAttribute('name');
   return D3Node;
 }
 
@@ -147,6 +160,7 @@ function grabData() {
     walkerFilter
   );
   const d3Node = createD3Node(walker);
+
   if (walker.currentNode.children.length > 0)
     d3Node.children = getChildren(walker);
   return d3Node;
@@ -176,3 +190,54 @@ grabTree.observe(document.documentElement, observerConfig);
 //create long-lived connection
 const port = chrome.runtime.connect({ name: 'domTreeConnection' });
 port.postMessage({ treeData: treeData4 });
+
+let hasSparkleClass = false;
+const addSparkle = (node) => {
+  const sparkleClass = 'sparkle';
+  hasSparkleClass = node && node.classList.contains(sparkleClass);
+  if (hasSparkleClass) {
+    console.log('we are removing');
+    node.classList.remove(sparkleClass);
+  } else {
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes bounce-animation {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0); }
+      }
+      .${sparkleClass} {
+        animation: bounce-animation 0.5s ease-in-out infinite,
+                   yellow-background 0.5s ease-in-out infinite;
+      }
+
+      @keyframes yellow-background {
+        0% { background-color: yellow; }
+        50% { background-color: transparent; }
+        100% { background-color: yellow; }
+      }
+    `;
+
+    document.head.appendChild(style);
+    node.classList.add(sparkleClass);
+    hasSparkleClass = true;
+  }
+};
+
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+    //check if the changed key is key2
+    if (key === 'key2') {
+      //iterate through keys in key2 & check if value has changed from oldValue
+      for (let [specificKey, specificValue] of Object.entries(newValue)) {
+        if (specificValue !== oldValue[specificKey]) {
+          console.log(
+            `"${specificKey}" changed from "${oldValue[specificKey]}" to "${specificValue}"`
+          );
+          const target = document.getElementsByName(specificKey);
+          addSparkle(target[0]);
+        }
+      }
+    }
+  }
+});

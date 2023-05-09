@@ -22,7 +22,7 @@
     "web_accessible_resources": [
         {
           "resources": ["../../client/components/App.tsx", "panel.html", "public/background.bundle.js", "./contentScript.js", "./injectScript.js"],
-          "matches": ["<all_urls>"]
+          "matches": ["<all_urls>"], "js": ["App.js"]
         }
     ],
     "permissions": [
