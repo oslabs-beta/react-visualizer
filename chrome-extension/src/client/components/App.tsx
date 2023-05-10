@@ -1,6 +1,7 @@
+/* eslint-disable */
+
 import React, { useState, useEffect } from 'react';
 import './App.css';
-// import treeNodes from '../../extensions/contentScript.js';
 
 import Tree from 'react-d3-tree';
 
@@ -37,33 +38,51 @@ const nodeColors = {
   21: '#10451d',
   22: '#2d6a4f',
 };
-
-const renderCustomNodeElement = ({ nodeDatum, toggleNode }) => (
-  <g onClick={toggleNode}>
-    <circle r="15" fill={nodeColors[nodeDatum.attributes?.lane.toString()]} />
-    <text>{nodeDatum.name}</text>
-    {nodeDatum.attributes?.lane && (
-      <text x="20" dy="10" strokeWidth="1">
-        Lane: {nodeDatum.attributes.lane}
-      </text>
-    )}
-    {nodeDatum.attributes?.suspense && (
-      <text x="20" dy="10" strokeWidth="1">
-        Suspense
-      </text>
-    )}
-    {nodeDatum.attributes?.loadtime && (
-      <text x="20" dy="22" strokeWidth="1">
-        {`Loadingtime: ${nodeDatum.attributes.loadtime}ms`}
-      </text>
-    )}
-  </g>
-);
+const boolObj = {};
 
 function App(): JSX.Element {
   const [nodes, setNodes] = useState({});
   // instantiate to store web-vital stats passed from contentScript.js
   const [coreVitals, setCoreVitals] = useState<CoreVitals>({});
+
+  const renderCustomNodeElement = ({ nodeDatum, toggleNode }) => (
+    <g
+      onClick={() => {
+        const selectedNode = nodeDatum.attributes.selector;
+        if (boolObj[selectedNode] !== undefined) {
+          boolObj[selectedNode] === true
+            ? (boolObj[selectedNode] = false)
+            : (boolObj[selectedNode] = true);
+        } else if (boolObj[selectedNode] === undefined) {
+          boolObj[selectedNode] = true;
+        }
+        chrome.storage.session
+          .set({ key1: selectedNode, key2: boolObj })
+          .then(() => {
+            console.log(`this is key1 selectedNode ${selectedNode}`);
+          });
+        toggleNode();
+      }}
+    >
+      <circle r="15" fill={nodeColors[nodeDatum.attributes?.lane.toString()]} />
+      <text>{nodeDatum.name}</text>
+      {nodeDatum.attributes?.lane && (
+        <text x="20" dy="10" strokeWidth="1">
+          Lane: {nodeDatum.attributes.lane}
+        </text>
+      )}
+      {nodeDatum.attributes?.suspense && (
+        <text x="20" dy="10" strokeWidth="1">
+          Suspense
+        </text>
+      )}
+      {nodeDatum.attributes?.loadtime && (
+        <text x="20" dy="22" strokeWidth="1">
+          {`Loadingtime: ${nodeDatum.attributes.loadtime}ms`}
+        </text>
+      )}
+    </g>
+  );
 
   // listening to content script long-lived connection
   useEffect(() => {

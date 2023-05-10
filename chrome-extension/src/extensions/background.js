@@ -98,3 +98,17 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
   //     }
   //   });
 });
+
+// background.js
+
+// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//   if (message.type === 'get-selector') {
+//     chrome.tabs.executeScript(sender.tab.id, {
+//       code: `
+//         const selector = ${JSON.stringify(message.selector)};
+//         const element = document.querySelector(selector);
+//         chrome.runtime.sendMessage({ type: 'element-found', element: element ? selector : null });
+//       `,
+//     });
+//   }
+// });

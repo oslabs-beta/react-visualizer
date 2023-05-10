@@ -1,31 +1,19 @@
-# React-Visualizer
+# C-React Chrome DevTool
 
-## Development mode
+## Option 1: Install C-React DevTool from the Chrome Web Store
 
-To run the app in development mode, open a terminal window and run the following command:
+1. Open your React application, or any website
 
-```
-npm run dev
-```
+2. Open Chrome Developer Tools and click on the C-React panel
 
-This will start both the server and the client. The server will be running on port 3000, and the client will be running on port 8080. Whenever you make changes to the server or client code, the server and client will automatically reload.
+3. Watch the tree update dynamically as you navigate through your web page by clicking on components
 
-## Production build
+4. Click on tree nodes to see corresponding element highted on your web page
 
-To create a production build of the app, open a terminal window and run the following command:
+## Option 2: Install C-React DevTool locally
 
-```
-npm run build
-```
+1. Go to Chrome Extensions for manual installation (chrome://extensions/)
 
-This will create a production build of the app in the build directory. The build will include both the client and server code.
+2. Click on Load unpacked
 
-To run the production build, open a terminal window and navigate to the build directory. Then, run the following command:
-
-```
-npm start
-```
-
-This will start the server in production mode. The server will be running on port 3000.
-
-Note that in production mode, the server will serve the static files from the build/public directory, and not from the src/client directory. Therefore, any changes you make to the client code will not be reflected in the production build until you rebuild the app using npm run build.
+3. Select react-visualizer/chrome-extension/build/ to load this extension
