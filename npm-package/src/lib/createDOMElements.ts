@@ -22,9 +22,11 @@ export const setStyles = (props: Props, element: HTMLElement): void => {
 export const isEvent = (key: string, element: HTMLElement): boolean =>
   key.startsWith('on') && key.toLowerCase() in element;
 
-
 let idCounter = 0;
-const getUniqueId = (): string => `id-${idCounter++}`
+const getUniqueId = (): string => {
+  idCounter += 1;
+  return `id-${idCounter}`;
+};
 
 const createDOMElements = (
   type: Type,
@@ -40,7 +42,7 @@ const createDOMElements = (
     );
   }
 
-  element.setAttribute("name", getUniqueId());
+  element.setAttribute('name', getUniqueId());
 
   // eslint-disable-next-line no-restricted-syntax
   for (const [propName, propValue] of Object.entries(props)) {
