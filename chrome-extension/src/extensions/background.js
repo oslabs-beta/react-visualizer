@@ -29,7 +29,6 @@ chrome.runtime.onConnect.addListener(function (port) {
 });
 
 let connections = {};
-const treeOfTrees = {};
 
 chrome.tabs.onActivated.addListener((activeInfo) => {
   let selectedTabId = activeInfo.tabId;
@@ -68,47 +67,4 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
       });
     }
   });
-
-  // chrome.runtime.onMessage.addListener((message) => {
-  // Get the tree object from the message
-  // if (message.tree) {
-  //   //set tab as key, tree object as value
-  //   treeOfTrees[selectedTabId] = message.tree;
-  //   chrome.storage.session.set({ key: treeOfTrees }).then(() => {
-  //     console.log('setting chrome storage to trees in first render');
-  //     console.log(treeOfTrees);
-  //   });
-  //   console.log('msg tree in first render');
-  //   console.log(treeOfTrees);
-  // chrome.runtime.sendMessage({ domTreeObj: treeOfTrees });
-  // }
-  // if (message.nestedObject) {
-  //   treeOfTrees[selectedTabId] = message.nestedObject;
-  //   //set updated tree in chrome storage
-  //   // chrome.storage.local.set({ key: treeOfTrees }).then(() => {
-  //   //   console.log('setting chrome storage to tres in second render');
-  //   //   console.log(treeOfTrees);
-  //   // });
-  //   console.log('setting chrome storage to tres in second render');
-  //   console.log(treeOfTrees);
-  //   chrome.runtime.sendMessage({ nestedObject: treeOfTrees });
-  // }
-  //     if (message.storedVitals) {
-  //       chrome.runtime.sendMessage({ storedVitalsfromBG: message.storedVitals });
-  //     }
-  //   });
 });
-
-// background.js
-
-// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//   if (message.type === 'get-selector') {
-//     chrome.tabs.executeScript(sender.tab.id, {
-//       code: `
-//         const selector = ${JSON.stringify(message.selector)};
-//         const element = document.querySelector(selector);
-//         chrome.runtime.sendMessage({ type: 'element-found', element: element ? selector : null });
-//       `,
-//     });
-//   }
-// });

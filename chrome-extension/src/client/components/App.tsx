@@ -50,16 +50,15 @@ function App(): JSX.Element {
       onClick={() => {
         const selectedNode = nodeDatum.attributes.selector;
         if (boolObj[selectedNode] !== undefined) {
-          boolObj[selectedNode] === true
-            ? (boolObj[selectedNode] = false)
-            : (boolObj[selectedNode] = true);
-        } else if (boolObj[selectedNode] === undefined) {
+          boolObj[selectedNode] = !boolObj[selectedNode];
+        } else {
           boolObj[selectedNode] = true;
         }
         chrome.storage.session
           .set({ key1: selectedNode, key2: boolObj })
           .then(() => {
             console.log(`this is key1 selectedNode ${selectedNode}`);
+            console.log(boolObj);
           });
         toggleNode();
       }}
@@ -87,7 +86,7 @@ function App(): JSX.Element {
   // listening to content script long-lived connection
   useEffect(() => {
     chrome.runtime.onConnect.addListener((port) => {
-      console.assert(port.name === 'domTreeConnection'); // eslint-disable-line
+      console.assert(port.name === 'domTreeConnection');
       port.onMessage.addListener((msg) => {
         // render initial tree
         if (msg.treeData) setNodes(JSON.parse(msg.treeData));
@@ -141,9 +140,7 @@ function App(): JSX.Element {
           // @ts-ignore
           data={nodes}
           nodeSize={nodeSize}
-          // orientation="vertical"
           pathFunc="step"
-          // collapsible="false"
           renderCustomNodeElement={renderCustomNodeElement}
         />
       </div>
