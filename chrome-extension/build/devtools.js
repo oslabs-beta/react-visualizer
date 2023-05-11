@@ -1,5 +1,5 @@
-/* eslint-disable */
-// @ts-nocheck
+// /* eslint-disable */
+// // @ts-nocheck
 
 chrome.devtools.panels.create(
   'C-React',
@@ -9,13 +9,6 @@ chrome.devtools.panels.create(
     // code invoked on panel creation
   }
 );
-
-//keeping as a backup for performance metrics
-chrome.devtools.panels.elements.createSidebarPane('Performance', (sidebar) => {
-  // sidebar initialization code here
-  console.log('testing if performance sidebar is working ');
-  sidebar.setObject({ some_data: 'Some data to show' });
-});
 
 // Create a connection to the background page - long live
 var backgroundPageConnection = chrome.runtime.connect({
