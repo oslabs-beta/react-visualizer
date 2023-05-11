@@ -77,7 +77,7 @@ function App(): JSX.Element {
       )}
       {nodeDatum.attributes?.loadtime && (
         <text x="20" dy="22" strokeWidth="1">
-          {`Loadingtime: ${nodeDatum.attributes.loadtime}ms`}
+          {`Working time: ${nodeDatum.attributes.loadtime}ms`}
         </text>
       )}
     </g>

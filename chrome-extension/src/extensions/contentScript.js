@@ -59,7 +59,9 @@ const walkerFilter = {
       node.nodeName.toLowerCase() === 'iframe' ||
       node.nodeName.toLowerCase() === 'text' ||
       node.nodeName.toLowerCase() === 'tspan' ||
-      node.tagName.toLowerCase() == 'svg'
+      node.tagName.toLowerCase() == 'svg' ||
+      node.tagName.toLowerCase() == 'span' ||
+      node.tagName.toLowerCase() == 'a'
     )
       return NodeFilter.FILTER_REJECT;
     else return NodeFilter.FILTER_ACCEPT;
@@ -131,7 +133,7 @@ function createD3Node(walker) {
   const node = walker.currentNode;
   //initialize and a new D3Node that will be returned later
   let D3Node = {};
-  D3Node.name = node.nodeName;
+  D3Node.name = node.id || node.className || node.nodeName;
   D3Node.attributes = getAttributes(node);
   D3Node.id = node.getAttribute('name');
   return D3Node;
@@ -182,7 +184,7 @@ let hasHighlightClass = false;
 
 //highlight node in DOM page if clicked on in tree
 const highlight = (node) => {
-  const highlightClass = 'sparkle';
+  const highlightClass = 'highlighted';
   console.log(node.classList);
   console.log(node);
   hasHighlightClass = node && node.classList.contains(highlightClass);
