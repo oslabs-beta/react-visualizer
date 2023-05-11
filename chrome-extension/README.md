@@ -8,12 +8,14 @@
 
 3. Watch the tree update dynamically as you navigate through your web page by clicking on components
 
-4. Click on tree nodes to see corresponding element highted on your web page
+4. Click on tree nodes to see corresponding element highlighted on your web page, if using our custom renderer
 
 ## Option 2: Install C-React DevTool locally
 
-1. Go to Chrome Extensions for manual installation (chrome://extensions/)
+1. Clone this repo onto your local machine
 
-2. Click on Load unpacked
+2. Go to Chrome Extensions for manual installation (chrome://extensions/)
 
-3. Select react-visualizer/chrome-extension/build/ to load this extension
+3. Click on Load unpacked
+
+4. Select react-visualizer/chrome-extension/build/ to load this extension

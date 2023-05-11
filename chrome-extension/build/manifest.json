@@ -3,7 +3,7 @@
     "name": "C-React",
     "version": "1.0",
     "devtools_page": "devtools.html",
-    "description": "Chrome Extension to visualize React concurrent rendering",
+    "description": "A Chrome Extension tool that visualizes React rendering of components",
     "background": {
       "service_worker": "public/background.bundle.js"
     },
@@ -27,6 +27,5 @@
     ],
     "permissions": [
         "activeTab", "scripting", "contextMenus", "tabs", "storage"
-    ],
-    "host_permissions": ["<all_urls>"]
+    ]
 }

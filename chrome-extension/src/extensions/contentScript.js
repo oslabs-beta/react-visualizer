@@ -9,8 +9,6 @@
  * </script>
  */
 import { onCLS, onFID, onLCP, onFCP, onTTFB, measure } from 'web-vitals';
-//user device info
-import { getDeviceInfo } from 'web-vitals-reporter';
 
 let coreWebVitals = {};
 function storeVitals() {
@@ -42,7 +40,6 @@ function storeVitals() {
   });
   return coreWebVitals;
 }
-//storeVitals();
 /**
  * @param {DOM node}
  * @return {treeWalker}
@@ -62,9 +59,9 @@ const walkerFilter = {
       node.nodeName.toLowerCase() === 'iframe' ||
       node.nodeName.toLowerCase() === 'text' ||
       node.nodeName.toLowerCase() === 'tspan' ||
-      node.tagName.toLowerCase() == 'svg'||
-      node.tagName.toLowerCase() == 'span'||
-      node.tagName.toLowerCase() == 'a' 
+      node.tagName.toLowerCase() == 'svg' ||
+      node.tagName.toLowerCase() == 'span' ||
+      node.tagName.toLowerCase() == 'a'
     )
       return NodeFilter.FILTER_REJECT;
     else return NodeFilter.FILTER_ACCEPT;
@@ -82,7 +79,6 @@ function getLane(node) {
   if (node.className.includes('TransitionLane')) {
     const lastTwo = node.className.slice(-2);
     const lastOne = node.className.slice(-1);
-    //console.log("last two: ", lastTwo);
     if (!isNaN(lastTwo)) {
       return Number(lastTwo);
     } else if (!isNaN(lastOne)) return Number(lastOne);
@@ -97,11 +93,8 @@ function getAttributes(node) {
     suspense: node.className.includes('Suspense'),
     loadtime: node.getAttribute('loadtime'),
     selector: node.getAttribute('name'),
-    
   };
 }
-
-
 
 /**
  * Get and return the children nodes of the node corresponding to a tree walker
@@ -114,10 +107,8 @@ function getChildren(walker) {
 
   //find all children of walker.currentNode
   while (childNode) {
-
     //convert walker to D3node
     let D3Node = createD3Node(walker);
-    // let childWalker = createWalker(walker.currentNode);
     //if the child node has children, recursively call the getChildren and assign the children to d3Node
     if (childNode.children.length > 0) {
       let childWalker = createWalker(walker.currentNode);
@@ -139,10 +130,9 @@ function getChildren(walker) {
 function createD3Node(walker) {
   //get the node corresponding to the walker object
   const node = walker.currentNode;
-  // console.log(node.getAttribute('name'));
   //initialize and a new D3Node that will be returned later
   let D3Node = {};
-  D3Node.name = node.id || node.className||node.nodeName;
+  D3Node.name = node.id || node.className || node.nodeName;
   D3Node.attributes = getAttributes(node);
   D3Node.id = node.getAttribute('name');
   return D3Node;
@@ -171,8 +161,6 @@ function grabData() {
 let d3Tree = grabData();
 const treeData4 = JSON.stringify(d3Tree);
 
-console.log('D3 tree is converted:', d3Tree);
-
 //listen to changes in DOM tree
 const grabTree = new MutationObserver(() => {
   let updatedTree = grabData();
@@ -193,13 +181,17 @@ grabTree.observe(document.documentElement, observerConfig);
 const port = chrome.runtime.connect({ name: 'domTreeConnection' });
 port.postMessage({ treeData: treeData4 });
 
-let hasSparkleClass = false;
-const addSparkle = (node) => {
-  const sparkleClass = 'sparkle';
-  hasSparkleClass = node && node.classList.contains(sparkleClass);
-  if (hasSparkleClass) {
-    console.log('we are removing');
-    node.classList.remove(sparkleClass);
+let hasHighlightClass = false;
+
+//highlight node in DOM page if clicked on in tree
+const highlight = (node) => {
+  const highlightClass = 'highlighted';
+  console.log(node.classList);
+  console.log(node);
+  hasHighlightClass = node && node.classList.contains(highlightClass);
+  if (hasHighlightClass) {
+    console.log('we are removing highlight class');
+    node.classList.remove(highlightClass);
   } else {
     const style = document.createElement('style');
     style.innerHTML = `
@@ -208,9 +200,9 @@ const addSparkle = (node) => {
         50% { transform: translateY(-10px); }
         100% { transform: translateY(0); }
       }
-      .${sparkleClass} {
+      .${highlightClass} {
         animation: bounce-animation 0.5s ease-in-out infinite,
-                   yellow-background 0.5s ease-in-out infinite;
+        yellow-background 0.5s ease-in-out infinite;
       }
 
       @keyframes yellow-background {
@@ -221,25 +213,28 @@ const addSparkle = (node) => {
     `;
 
     document.head.appendChild(style);
-    node.classList.add(sparkleClass);
-    hasSparkleClass = true;
+    node.classList.add(highlightClass);
+    hasHighlightClass = true;
   }
+  return;
 };
-
+let target;
 chrome.storage.onChanged.addListener((changes, namespace) => {
   for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+    console.log(changes);
     //check if the changed key is key2
     if (key === 'key2') {
       //iterate through keys in key2 & check if value has changed from oldValue
       for (let [specificKey, specificValue] of Object.entries(newValue)) {
-        if (specificValue !== oldValue[specificKey]) {
+        if (specificValue !== (oldValue && oldValue[specificKey])) {
           console.log(
             `"${specificKey}" changed from "${oldValue[specificKey]}" to "${specificValue}"`
           );
-          const target = document.getElementsByName(specificKey);
-          addSparkle(target[0]);
+          target = document.getElementsByName(specificKey);
         }
       }
     }
   }
+  highlight(target[0]);
+  return;
 });
