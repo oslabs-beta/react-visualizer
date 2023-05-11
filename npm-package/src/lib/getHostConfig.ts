@@ -99,42 +99,59 @@ const getHostConfig: HostConfig = () => ({
     internalHandle
   ) => {
     updatePayload.forEach((propName) => {
-      // children changes is done by the other methods like `commitTextUpdate`
-      if (propName === 'children') {
-        const propValue = newProps[propName];
-        if (typeof propValue === 'string' || typeof propValue === 'number') {
-          domElement.textContent = propValue;
+      try {
+        if (propName === 'children') {
+          const propValue = newProps[propName];
+          if (typeof propValue === 'string' || typeof propValue === 'number') {
+            // eslint-disable-next-line no-param-reassign
+            instance.textContent = propValue;
+          }
+          return;
         }
-        return;
-      }
 
-      if (propName === 'style') {
-        // Return a diff between the new and the old styles
-        const styleDiffs = shallowDiff(oldProps.style, newProps.style);
-        const finalStyles = styleDiffs.reduce((acc, styleName) => {
-          if (!newProps.style[styleName]) acc[styleName] = '';
-          else acc[styleName] = newProps.style[styleName];
+        if (propName === 'style') {
+          const styleDiffs = shallowDiff(oldProps.style, newProps.style);
 
-          return acc;
-        }, {});
+          if (styleDiffs) {
+            const finalStyles = styleDiffs.reduce((acc, styleName) => {
+              if (!newProps.style[styleName]) acc[styleName] = '';
+              else acc[styleName] = newProps.style[styleName];
 
-        setStyles(domElement, finalStyles);
-      } else if (newProps[propName] || typeof newProps[propName] === 'number') {
-        if (isEvent(propName, domElement)) {
+              return acc;
+            }, {});
+
+            setStyles(instance, finalStyles);
+            return;
+          }
+        }
+
+        if (isEvent(propName, instance)) {
           const eventName = propName.toLowerCase().replace('on', '');
-          domElement.removeEventListener(eventName, oldProps[propName]);
-          domElement.addEventListener(eventName, newProps[propName]);
+          if (typeof oldProps[propName] === 'function') {
+            instance.removeEventListener(eventName, oldProps[propName]);
+          }
+
+          if (['focus', 'blur', 'focusin', 'focusout'].includes(eventName)) {
+            if (typeof newProps[propName] === 'function') {
+              instance.addEventListener(eventName, (e) => {
+                newProps[propName](e);
+              });
+            }
+          } else if (typeof newProps[propName] === 'function') {
+            instance.addEventListener(eventName, newProps[propName]);
+          }
+        } else if (typeof newProps[propName] !== 'undefined') {
+          instance.setAttribute(propName, newProps[propName]);
         } else {
-          domElement.setAttribute(propName, newProps[propName]);
+          instance.removeAttribute(propName);
         }
-      } else if (isEvent(propName, domElement)) {
-        const eventName = propName.toLowerCase().replace('on', '');
-        domElement.removeEventListener(eventName, oldProps[propName]);
-      } else {
-        domElement.removeAttribute(propName);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log('Error in updatePayload');
       }
     });
   },
+
   commitTextUpdate: (textInstance, oldText, newText) => {
     // eslint-disable-next-line no-param-reassign, @typescript-eslint/no-unsafe-assignment
     textInstance.nodeValue = newText;
@@ -149,6 +166,7 @@ const getHostConfig: HostConfig = () => ({
   hideInstance: () => {},
   unhideInstance: () => {},
   commitMount: (instace, type, props, internalInstanceHandle) => {},
+  scheduleTimeout: () => {},
   supportsMutation: true,
 });
 

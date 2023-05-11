@@ -22,6 +22,12 @@ export const setStyles = (props: Props, element: HTMLElement): void => {
 export const isEvent = (key: string, element: HTMLElement): boolean =>
   key.startsWith('on') && key.toLowerCase() in element;
 
+let idCounter = 0;
+const getUniqueId = (): string => {
+  idCounter += 1;
+  return `id-${idCounter}`;
+};
+
 const createDOMElements = (
   type: Type,
   props: RenderElementsProps,
@@ -35,6 +41,8 @@ const createDOMElements = (
       internalInstanceHandle?.actualDuration.toFixed(2).toString()
     );
   }
+
+  element.setAttribute('name', getUniqueId());
 
   // eslint-disable-next-line no-restricted-syntax
   for (const [propName, propValue] of Object.entries(props)) {

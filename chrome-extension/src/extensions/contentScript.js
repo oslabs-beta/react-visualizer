@@ -93,7 +93,6 @@ function getAttributes(node) {
     suspense: node.className.includes('Suspense'),
     loadtime: node.getAttribute('loadtime'),
     selector: node.getAttribute('name'),
-    //new
   };
 }
 
@@ -143,7 +142,9 @@ function createD3Node(walker) {
  * @param {treeWalker} walker
  * @returns {} the root node of d3 Tree
  */
+
 function grabData() {
+  //idCounter = 0
   const root = document.body;
   const walker = document.createTreeWalker(
     root,
