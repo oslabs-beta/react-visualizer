@@ -62,7 +62,9 @@ const walkerFilter = {
       node.nodeName.toLowerCase() === 'iframe' ||
       node.nodeName.toLowerCase() === 'text' ||
       node.nodeName.toLowerCase() === 'tspan' ||
-      node.tagName.toLowerCase() == 'svg'
+      node.tagName.toLowerCase() == 'svg'||
+      node.tagName.toLowerCase() == 'span'||
+      node.tagName.toLowerCase() == 'a' 
     )
       return NodeFilter.FILTER_REJECT;
     else return NodeFilter.FILTER_ACCEPT;
@@ -87,11 +89,6 @@ function getLane(node) {
   }
   return 0;
 }
-// let idCounter = 0;
-
-// function getUniqueId() {
-//   return `id-${idCounter++}`;
-// }
 
 function getAttributes(node) {
   return {
@@ -100,9 +97,11 @@ function getAttributes(node) {
     suspense: node.className.includes('Suspense'),
     loadtime: node.getAttribute('loadtime'),
     selector: node.getAttribute('name'),
-    //new
+    
   };
 }
+
+
 
 /**
  * Get and return the children nodes of the node corresponding to a tree walker
@@ -115,6 +114,7 @@ function getChildren(walker) {
 
   //find all children of walker.currentNode
   while (childNode) {
+
     //convert walker to D3node
     let D3Node = createD3Node(walker);
     // let childWalker = createWalker(walker.currentNode);
@@ -142,7 +142,7 @@ function createD3Node(walker) {
   // console.log(node.getAttribute('name'));
   //initialize and a new D3Node that will be returned later
   let D3Node = {};
-  D3Node.name = node.nodeName;
+  D3Node.name = node.id || node.className||node.nodeName;
   D3Node.attributes = getAttributes(node);
   D3Node.id = node.getAttribute('name');
   return D3Node;
@@ -152,7 +152,9 @@ function createD3Node(walker) {
  * @param {treeWalker} walker
  * @returns {} the root node of d3 Tree
  */
+
 function grabData() {
+  //idCounter = 0
   const root = document.body;
   const walker = document.createTreeWalker(
     root,
