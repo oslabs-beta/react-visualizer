@@ -50,7 +50,7 @@ cRender(
 
 3. Watch the tree update dynamically as you navigate through your web page
 
-4. Click on tree nodes to see corresponding element highted on your web page, if using our custom renderer
+4. Click on tree nodes to see corresponding element highlighted on your web page, if using our custom renderer
 
 ### Option 2: Install C-React DevTool locally
 
