@@ -37,7 +37,7 @@ const createDOMElements = (
 
   if (internalInstanceHandle.actualDuration !== undefined) {
     element.setAttribute(
-      'loadtime',
+      'worktime',
       internalInstanceHandle?.actualDuration.toFixed(2).toString()
     );
   }
@@ -69,7 +69,7 @@ const createDOMElements = (
 
   if (hasTransition(laneNum)) {
     element.style.backgroundColor = setTransitionColor(laneNum);
-    element.classList.add(`TransitionLane${laneNum - 6}`);
+    element.classList.add(`TransitionLane${laneNum}`);
   }
 
   return element;
