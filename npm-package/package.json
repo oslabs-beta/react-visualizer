@@ -1,6 +1,6 @@
 {
   "name": "creact-visualizer",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "NPM Package",
   "main": "build/bundle.js",
   "types": "build/bundle.d.ts",
@@ -64,7 +64,7 @@
     "ts-jest": "^29.0.5",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.5",
-    "webpack": "^5.75.0",
+    "webpack": "^5.76.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
   },
