@@ -91,7 +91,7 @@ function getAttributes(node) {
     type: node.className || node.nodeName,
     lane: getLane(node),
     suspense: node.className.includes('Suspense'),
-    loadtime: node.getAttribute('loadtime'),
+    worktime: node.getAttribute('worktime'),
     selector: node.getAttribute('name'),
   };
 }
