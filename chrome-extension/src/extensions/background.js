@@ -23,32 +23,39 @@ let openCount = 0;
 
 let connections = {};
 let selectedTabId;
+// let contentScriptPorts = {};
+
 chrome.tabs.onActivated.addListener((activeInfo) => {
   selectedTabId = activeInfo.tabId;
 });
-chrome.runtime.onConnect.addListener(function (port, devToolsConnection) {
+
+chrome.runtime.onConnect.addListener(function (port) {
   if (port.name == 'devtools-page') {
     openCount++;
     port.onDisconnect.addListener(function (port) {
       openCount--;
     });
   }
+});
+chrome.runtime.onConnect.addListener(function (devToolsConnection) {
   // assign the listener function to a variable so we can remove it later
   if (devToolsConnection.name == 'devtools-page') {
     var devToolsListener = function (message, sender, sendResponse) {
       // Inject a content script into the identified tab
-      connections[selectedTabId] = devToolsConnection;
-      //expecting tabId and file:scriptToInject
-      chrome.scripting
-        .executeScript({
-          //target tab
-          target: { tabId: selectedTabId },
-          //inject the content script to above tab
-          files: [message.scriptToInject],
-        })
-        .then(() => console.log('script injected'));
+      const tabId = sender.tab.id;
+      if (tabId === selectedTabId) {
+        connections[message.tabId] = devToolsConnection;
+        //expecting tabId and file:scriptToInject
+        chrome.scripting
+          .executeScript({
+            //target tab
+            target: { tabId: message.tabId },
+            //inject the content script to above tab
+            files: [message.scriptToInject],
+          })
+          .then(() => console.log('script injected'));
+      }
     };
-
     // add the listener to the one time message - postMessage
     devToolsConnection.onMessage.addListener(devToolsListener);
 
