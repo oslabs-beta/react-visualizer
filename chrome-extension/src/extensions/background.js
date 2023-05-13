@@ -23,7 +23,6 @@ let openCount = 0;
 
 let connections = {};
 let selectedTabId;
-// let contentScriptPorts = {};
 
 chrome.tabs.onActivated.addListener((activeInfo) => {
   selectedTabId = activeInfo.tabId;

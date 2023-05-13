@@ -15,12 +15,6 @@ var backgroundPageConnection = chrome.runtime.connect({
   name: 'devtools-page',
 });
 
-// //inject the content script - sending one time message
-// backgroundPageConnection.postMessage({
-//   //passing the tabId to the background
-//   tabId: chrome.devtools.inspectedWindow.tabId,
-//   scriptToInject: 'public/content.bundle.js',
-// });
 // Relay the tab ID to the background page
 chrome.runtime.sendMessage({
     tabId: chrome.devtools.inspectedWindow.tabId,
