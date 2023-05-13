@@ -161,7 +161,7 @@ function grabData() {
 let d3Tree = grabData();
 const treeData4 = JSON.stringify(d3Tree);
 
-//listen to changes in DOM tree
+// //listen to changes in DOM tree
 const grabTree = new MutationObserver(() => {
   let updatedTree = grabData();
   chrome.runtime.sendMessage({ nestedObject: updatedTree });
