@@ -159,7 +159,7 @@ function grabData() {
 }
 
 let d3Tree = grabData();
-const treeData4 = JSON.stringify(d3Tree);
+const treeData = JSON.stringify(d3Tree);
 
 // //listen to changes in DOM tree
 const grabTree = new MutationObserver(() => {
@@ -179,7 +179,7 @@ grabTree.observe(document.documentElement, observerConfig);
 
 //create long-lived connection
 const port = chrome.runtime.connect({ name: 'domTreeConnection' });
-port.postMessage({ treeData: treeData4 });
+port.postMessage({ treeData: treeData });
 
 let hasHighlightClass = false;
 
