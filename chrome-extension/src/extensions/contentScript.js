@@ -162,24 +162,72 @@ let d3Tree = grabData();
 const treeData = JSON.stringify(d3Tree);
 
 // //listen to changes in DOM tree
-const grabTree = new MutationObserver(() => {
+// const grabTree = new MutationObserver(() => {
+//   let updatedTree = grabData();
+//   chrome.runtime.sendMessage({ nestedObject: updatedTree });
+//   let updatedVitals = storeVitals();
+//   chrome.runtime.sendMessage({ storedVitals: updatedVitals });
+// });
+
+// const observerConfig = {
+//   attributes: true,
+//   childList: true,
+//   subtree: true,
+// };
+
+// grabTree.observe(document.documentElement, observerConfig);
+
+//create long-lived connection
+const port = chrome.runtime.connect({ name: 'domTreeConnection' });
+port.postMessage({ treeData: treeData });
+
+//new
+// Function to update the DOM tree
+function updateDOMTree() {
   let updatedTree = grabData();
   chrome.runtime.sendMessage({ nestedObject: updatedTree });
   let updatedVitals = storeVitals();
   chrome.runtime.sendMessage({ storedVitals: updatedVitals });
-});
+}
 
+// Callback function for MutationObserver
+const mutationCallback = () => {
+  updateDOMTree();
+};
+
+// Create a new MutationObserver instance
+const observer = new MutationObserver(mutationCallback);
+
+// Configuration for the MutationObserver
 const observerConfig = {
   attributes: true,
   childList: true,
   subtree: true,
 };
 
-grabTree.observe(document.documentElement, observerConfig);
+// Start observing mutations on the entire document
+observer.observe(document, observerConfig);
 
-//create long-lived connection
-const port = chrome.runtime.connect({ name: 'domTreeConnection' });
-port.postMessage({ treeData: treeData });
+// Event listener for visibility change
+const visibilityChangeHandler = () => {
+  if (document.visibilityState === 'hidden') {
+    // Stop observing mutations when the tab becomes hidden
+    observer.disconnect();
+  } else if (document.visibilityState === 'visible') {
+    // Resume observing mutations when the tab becomes visible again
+    observer.observe(document, observerConfig);
+    // Update the DOM tree on tab visibility change
+    updateDOMTree();
+  }
+};
+
+// Add event listener for visibility change
+document.addEventListener('visibilitychange', visibilityChangeHandler);
+
+// Initial DOM tree update
+updateDOMTree();
+
+//new end
 
 let hasHighlightClass = false;
 
