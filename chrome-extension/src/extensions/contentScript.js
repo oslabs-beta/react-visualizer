@@ -144,7 +144,6 @@ function createD3Node(walker) {
  */
 
 function grabData() {
-  //idCounter = 0
   const root = document.body;
   const walker = document.createTreeWalker(
     root,
@@ -161,28 +160,10 @@ function grabData() {
 let d3Tree = grabData();
 const treeData = JSON.stringify(d3Tree);
 
-// //listen to changes in DOM tree
-// const grabTree = new MutationObserver(() => {
-//   let updatedTree = grabData();
-//   chrome.runtime.sendMessage({ nestedObject: updatedTree });
-//   let updatedVitals = storeVitals();
-//   chrome.runtime.sendMessage({ storedVitals: updatedVitals });
-// });
-
-// const observerConfig = {
-//   attributes: true,
-//   childList: true,
-//   subtree: true,
-// };
-
-// grabTree.observe(document.documentElement, observerConfig);
-
 //create long-lived connection
 const port = chrome.runtime.connect({ name: 'domTreeConnection' });
 port.postMessage({ treeData: treeData });
 
-//new
-// Function to update the DOM tree
 function updateDOMTree() {
   let updatedTree = grabData();
   chrome.runtime.sendMessage({ nestedObject: updatedTree });
@@ -190,15 +171,13 @@ function updateDOMTree() {
   chrome.runtime.sendMessage({ storedVitals: updatedVitals });
 }
 
-// Callback function for MutationObserver
 const mutationCallback = () => {
   updateDOMTree();
 };
 
-// Create a new MutationObserver instance
+//listen to changes in DOM tree
 const observer = new MutationObserver(mutationCallback);
 
-// Configuration for the MutationObserver
 const observerConfig = {
   attributes: true,
   childList: true,
@@ -221,13 +200,7 @@ const visibilityChangeHandler = () => {
   }
 };
 
-// Add event listener for visibility change
 document.addEventListener('visibilitychange', visibilityChangeHandler);
-
-// Initial DOM tree update
-updateDOMTree();
-
-//new end
 
 let hasHighlightClass = false;
 
