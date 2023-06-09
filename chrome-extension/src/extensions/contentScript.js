@@ -144,7 +144,6 @@ function createD3Node(walker) {
  */
 
 function grabData() {
-  //idCounter = 0
   const root = document.body;
   const walker = document.createTreeWalker(
     root,
@@ -161,13 +160,23 @@ function grabData() {
 let d3Tree = grabData();
 const treeData = JSON.stringify(d3Tree);
 
-// //listen to changes in DOM tree
-const grabTree = new MutationObserver(() => {
+//create long-lived connection
+const port = chrome.runtime.connect({ name: 'domTreeConnection' });
+port.postMessage({ treeData: treeData });
+
+function updateDOMTree() {
   let updatedTree = grabData();
   chrome.runtime.sendMessage({ nestedObject: updatedTree });
   let updatedVitals = storeVitals();
   chrome.runtime.sendMessage({ storedVitals: updatedVitals });
-});
+}
+
+const mutationCallback = () => {
+  updateDOMTree();
+};
+
+//listen to changes in DOM tree
+const observer = new MutationObserver(mutationCallback);
 
 const observerConfig = {
   attributes: true,
@@ -175,11 +184,23 @@ const observerConfig = {
   subtree: true,
 };
 
-grabTree.observe(document.documentElement, observerConfig);
+// Start observing mutations on the entire document
+observer.observe(document, observerConfig);
 
-//create long-lived connection
-const port = chrome.runtime.connect({ name: 'domTreeConnection' });
-port.postMessage({ treeData: treeData });
+// Event listener for visibility change
+const visibilityChangeHandler = () => {
+  if (document.visibilityState === 'hidden') {
+    // Stop observing mutations when the tab becomes hidden
+    observer.disconnect();
+  } else if (document.visibilityState === 'visible') {
+    // Resume observing mutations when the tab becomes visible again
+    observer.observe(document, observerConfig);
+    // Update the DOM tree on tab visibility change
+    updateDOMTree();
+  }
+};
+
+document.addEventListener('visibilitychange', visibilityChangeHandler);
 
 let hasHighlightClass = false;
 

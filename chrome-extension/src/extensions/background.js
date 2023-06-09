@@ -1,7 +1,4 @@
-// const extensions = 'https://developer.chrome.com/docs/extensions';
-// const webstore = 'https://developer.chrome.com/docs/webstore';
-
-//creating a context menu
+//create a context menu
 chrome.runtime.onInstalled.addListener(async () => {
   chrome.contextMenus.create({
     title: 'C-React',
