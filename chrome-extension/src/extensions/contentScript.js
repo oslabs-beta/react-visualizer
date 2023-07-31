@@ -8,7 +8,7 @@
  *   import {onCLS, onFID, onLCP} from 'https://unpkg.com/web-vitals@3?module';
  * </script>
  */
-import { onCLS, onFID, onLCP, onFCP, onTTFB, measure } from 'web-vitals';
+import { onCLS, onFID, onLCP, onFCP, onTTFB} from 'web-vitals';
 
 let coreWebVitals = {};
 function storeVitals() {

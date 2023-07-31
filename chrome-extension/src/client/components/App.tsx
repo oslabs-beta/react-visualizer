@@ -107,6 +107,10 @@ function App(): JSX.Element {
 
   // setting size of nodes in tree
   const nodeSize = { x: 150, y: 50 };
+  let recommendations: Array<string>;
+  if (coreVitals.fidRating !== 'Good') {
+    recommendations.push('Avoid or break up long tasks');
+  }
 
   return (
     <div className="App">
@@ -123,17 +127,16 @@ function App(): JSX.Element {
             Largest Contentful Paint (LCP): {coreVitals.lcp}
             {coreVitals.lcpRating}
           </li>
-        </div>
-        <div className="otherVitals">
-          <li>
-            First Contentful Paint (FCP): {coreVitals.fcp}
-            {coreVitals.fcpRating}
-          </li>
           <li>
             Time to First Byte (TTFB): {coreVitals.ttfb}
             {coreVitals.ttfbRating}
           </li>
+          <li>
+            First Contentful Paint (FCP): {coreVitals.fcp}
+            {coreVitals.fcpRating}
+          </li>
         </div>
+        <p>See Recommendations: {recommendations}</p>
       </div>
       <div id="treeWrapper" style={{ width: '100em', height: '100em' }}>
         <Tree
